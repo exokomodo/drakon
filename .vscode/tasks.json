@@ -5,6 +5,9 @@
             "label": "build examples/hello",
             "type": "shell",
             "command": "make",
+            "presentation": {
+                "reveal": "silent"
+            },
             "args": [
                 "build/examples/hello",
             ],
@@ -14,7 +17,7 @@
             },
             "problemMatcher": [
                 "$gcc"
-            ]
+            ],
         }
     ]
 }
