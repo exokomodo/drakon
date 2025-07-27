@@ -2,7 +2,7 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug] "
 labels: ["bug"]
-projects: ["drakon/9"]
+projects: ["exokomodo/9"]
 type: Bug
 assignees: []
 body:
