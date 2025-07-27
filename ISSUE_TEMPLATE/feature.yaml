@@ -1,0 +1,25 @@
+name: Feature Request
+description: Request a new feature
+title: "[Feature] "
+labels: ["enhancement"]
+projects: ["drakon/9"]
+assignees: []
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for shoveling more work onto us!
+  - type: textarea
+    id: whaddaya-want
+    attributes:
+      label: What feature do you want?
+      description: You can also ask that we remove things
+      placeholder: Help us
+    validations:
+      required: true
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Extra info
+      description: Tell us whatever
