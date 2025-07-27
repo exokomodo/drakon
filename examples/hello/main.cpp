@@ -1,7 +1,7 @@
-#include <iostream>
 #include <drakon.h>
+#include <iostream>
 
 int main() {
-    drakon::runSimple("Drakon - Hello");
-    return 0;
+  drakon::runSimple("Drakon - Hello");
+  return 0;
 }

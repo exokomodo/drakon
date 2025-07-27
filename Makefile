@@ -12,6 +12,7 @@ setup/ubuntu: ## Setup Ubuntu dependencies
 	# https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies
 	sudo apt-get install -y \
 		build-essential \
+		clang-format \
 		cmake \
 		git \
 		gnome-desktop-testing \
@@ -62,13 +63,22 @@ run/examples/hello: build/Debug/hello ## Run the example (debug)
 	$<
 
 format: ## Format code
-	echo "TODO: $@"
+	find . \
+		-not -path "./vendor/*" \
+		-not -path "./build/*" \
+		-not -path "./examples/*/build/*" \
+		-type f \
+		\( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) \
+		-exec clang-format -i {} \;
 
-lint: ## Lint code
-	echo "TODO: $@"
-
-fix: ## Fix code issues
-	echo "TODO: $@"
+format/check: ## Check code formatting
+	find . \
+		-not -path "./vendor/*" \
+		-not -path "./build/*" \
+		-not -path "./examples/*/build/*" \
+		-type f \
+		\( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) \
+		-exec clang-format --dry-run -Werror {} \;
 
 env-%: ## Check for env var
 	if [ -z "$($*)" ]; then \
