@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        make setup/ubuntu
+
+    - name: Build - drakon
+      run: |
+        make build
+
+    - name: Build - examples/hello
+      run: |
+        make build/examples/hello
