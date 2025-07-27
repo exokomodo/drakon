@@ -6,6 +6,13 @@ SHELL := /bin/bash
 
 BUILD_DIR := build
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	CMAKE_OS_FLAGS :=
+else ifeq ($(UNAME_S),Darwin)
+	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
+endif
+
 .PHONY: setup/ubuntu
 setup/ubuntu: ## Setup Ubuntu dependencies
 	sudo apt-get update
@@ -42,10 +49,21 @@ setup/ubuntu: ## Setup Ubuntu dependencies
 		ninja-build \
 		pkg-config
 
+.PHONY: setup/mac
+setup/mac: ## Setup macOS dependencies
+	if ! command -v brew &> /dev/null; then
+		echo "Homebrew is not installed. Please install Homebrew first (https://brew.sh/)"
+		exit 1
+	fi
+	brew update
+	brew install \
+		clang-format \
+		cmake
+
 build/drakon: build
 .PHONY: build
 build: ## ## Build the drakon library
-	cmake -S . -B $(BUILD_DIR)
+	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS)
 	cmake --build $(BUILD_DIR)
 
 build/Debug/hello: build/examples/hello
