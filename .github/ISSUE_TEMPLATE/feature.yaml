@@ -2,7 +2,7 @@ name: Feature Request
 description: Request a new feature
 title: "[Feature] "
 labels: ["enhancement"]
-projects: ["drakon/9"]
+projects: ["exokomodo/9"]
 assignees: []
 type: Feature
 body:
