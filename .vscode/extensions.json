@@ -4,6 +4,7 @@
         "ms-vscode.cpptools-extension-pack",
         "ms-vscode.makefile-tools",
         "github.vscode-github-actions",
-        "xaver.clang-format"
+        "xaver.clang-format",
+        "yandeu.five-server"
     ]
 }
