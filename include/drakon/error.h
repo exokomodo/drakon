@@ -15,7 +15,9 @@ struct Error {
 
   [[nodiscard]] std::string_view getMessage() const;
 
-  friend std::ostream &operator<<(std::ostream &os, const Error &error);
+  friend std::ostream &operator<<(std::ostream &os, const Error &error) {
+    return os << "Error: " << error.getMessage();
+  }
 
 protected:
   std::string_view message;

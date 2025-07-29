@@ -10,7 +10,3 @@ drakon::Error::Error(const std::string_view _message) {
 [[nodiscard]] std::string_view drakon::Error::getMessage() const {
   return message;
 }
-
-std::ostream &drakon::operator<<(std::ostream &os, const drakon::Error &error) {
-  return os << "Error: " << error.getMessage();
-}
