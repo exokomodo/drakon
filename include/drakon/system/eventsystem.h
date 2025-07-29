@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include <drakon/error.h>
+#include <drakon/event.h>
 #include <drakon/system/interface.h>
 #include <functional>
 #include <map>
@@ -10,11 +11,11 @@
 #include <vector>
 
 #define MAKE_LISTENER(name)                                                    \
-  std::function<void(SDL_Event)> name = [this](SDL_Event event)
+  std::function<void(drakon::Event)> name = [this](drakon::Event event)
 
 namespace drakon {
 struct EventSystem : public System {
-  typedef std::function<void(SDL_Event)> Listener;
+  typedef std::function<void(drakon::Event &)> Listener;
 
   EventSystem();
   EventSystem(const EventSystem &) = default;
@@ -23,17 +24,16 @@ struct EventSystem : public System {
   EventSystem &operator=(EventSystem &&) = default;
   ~EventSystem() = default;
 
-  std::optional<Error> enqueue(const SDL_Event &event);
-  std::optional<Error> addListener(const SDL_EventType type,
-                                   std::function<void(SDL_Event)> listener);
-  bool removeListener(const SDL_EventType type,
-                      std::function<void(SDL_Event)> listener);
+  std::optional<Error> enqueue(const drakon::Event &event);
+  std::optional<Error> addListener(const drakon::EventType type,
+                                   Listener listener);
+  bool removeListener(const EventType type, Listener listener);
   std::optional<Error> process() override;
 
 private:
-  typedef std::vector<std::function<void(SDL_Event)>> EventListenerList;
-  typedef std::map<SDL_EventType, EventListenerList> EventListenerMap;
-  std::queue<SDL_Event> eventQueue;
+  typedef std::vector<Listener> EventListenerList;
+  typedef std::map<drakon::EventType, EventListenerList> EventListenerMap;
+  std::queue<drakon::Event> eventQueue;
   EventListenerMap listeners;
 
   bool isEmpty() const;

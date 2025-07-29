@@ -13,14 +13,14 @@ struct HelloScene : public drakon::Scene {
   std::shared_ptr<Scene> nextScene;
 
   std::optional<drakon::Error> load() override {
-    if (!eventSystem->addListener(SDL_EVENT_KEY_DOWN, changeColor)) {
+    if (!eventSystem->addListener(drakon::KeyDown, changeColor)) {
       return drakon::Error("Failed to add key down listener");
     }
     return std::nullopt;
   }
 
   std::optional<drakon::Error> unload() override {
-    if (!eventSystem->removeListener(SDL_EVENT_KEY_DOWN, changeColor)) {
+    if (!eventSystem->removeListener(drakon::KeyDown, changeColor)) {
       return drakon::Error("Failed to remove key down listener");
     }
     return std::nullopt;
@@ -33,7 +33,9 @@ struct HelloScene : public drakon::Scene {
 
 private:
   MAKE_LISTENER(changeColor) {
-    switch (event.key.key) {
+    const auto keyEvent = static_cast<drakon::KeyEvent &>(event);
+    const auto code = keyEvent.getKeyCode();
+    switch (code) {
     case SDLK_LEFT: {
       red = std::max(0x00, red - 10);
     } break;

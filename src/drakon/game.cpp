@@ -30,13 +30,15 @@ drakon::Game::~Game() {
 
 std::optional<drakon::Error> drakon::Game::run() {
   isRunning = true;
-  SDL_Event event;
+  SDL_Event sdlEvent;
   activeScene->load();
   while (isRunning) {
-    // TODO: Consume events into an eventSystem, then dispatch them to the
-    // game logic.
-    while (SDL_PollEvent(&event)) {
-      eventSystem->enqueue(event);
+    while (SDL_PollEvent(&sdlEvent)) {
+      const auto event = drakon::Event::fromSDL(sdlEvent);
+      if (!event) {
+        continue; // Skip unrecognized events
+      }
+      eventSystem->enqueue(*event);
     }
     for (auto &system : systems) {
       auto error = system->process();
