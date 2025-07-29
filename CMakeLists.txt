@@ -57,5 +57,5 @@ target_include_directories(drakon PUBLIC
 
 target_link_libraries(drakon PRIVATE SDL3::SDL3)
 
-add_subdirectory(vendor/SDL3)
+add_subdirectory(vendor/SDL3 SYSTEM)
 add_subdirectory(examples/hello EXCLUDE_FROM_ALL)
