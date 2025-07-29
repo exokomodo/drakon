@@ -21,6 +21,12 @@ jobs:
       run: |
         make setup/ubuntu
 
+    - name: Check versions
+      run: |
+        make --version
+        gcc --version
+        cmake --version
+
     - name: Build - drakon
       run: |
         make build
