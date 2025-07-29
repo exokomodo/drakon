@@ -1,10 +1,10 @@
 #include <drakon/error.h>
 
-drakon::Error::Error(const std::string_view message) {
-  if (message.empty()) {
+drakon::Error::Error(const std::string_view _message) {
+  if (_message.empty()) {
     throw std::invalid_argument("Error message cannot be empty");
   }
-  this->message = message;
+  message = _message;
 }
 
 [[nodiscard]] std::string_view drakon::Error::getMessage() const {

@@ -4,12 +4,12 @@
   (member) = std::make_shared<type>();                                         \
   systems.push_back(member);
 
-drakon::Game::Game(const std::string_view title, int width, int height)
-    : isRunning(false) {
+drakon::Game::Game(const std::string_view _title, int _width, int _height)
+    : title(_title), isRunning(false) {
   systems = std::vector<std::shared_ptr<drakon::System>>();
   INIT_SYSTEM(eventSystem, drakon::EventSystem);
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_CreateWindowAndRenderer(title.data(), width, height, 0, &window,
+  SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
 }
 

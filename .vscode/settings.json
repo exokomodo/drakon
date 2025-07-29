@@ -35,6 +35,8 @@
         "algorithm": "cpp",
         "queue": "cpp",
         "stack": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "vector": "cpp",
+        "ios": "cpp"
     }
 }
