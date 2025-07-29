@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <drakon/error.h>
 #include <drakon/system/eventsystem.h>
+#include <memory>
 #include <optional>
 #include <vector>
 
