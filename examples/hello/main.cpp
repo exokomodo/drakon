@@ -1,9 +1,14 @@
 #include "HelloGame.h"
+#include "HelloScene.h"
 #include <drakon/error.h>
+#include <drakon/scene.h>
 #include <iostream>
 
 int main() {
-  auto game = HelloGame("Hello DRAKON", 640, 480);
+  auto helloScene = std::make_shared<HelloScene>();
+  auto otherScene = std::make_shared<OtherScene>(helloScene);
+  helloScene->nextScene = otherScene;
+  auto game = HelloGame(helloScene, "Hello DRAKON", 640, 480);
   auto error = game.run();
   if (error) {
     std::cerr << *error << std::endl;
