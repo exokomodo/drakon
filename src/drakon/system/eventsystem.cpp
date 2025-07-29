@@ -29,18 +29,17 @@ drakon::EventSystem::addListener(const SDL_EventType type,
   return std::nullopt;
 }
 
-const bool
-drakon::EventSystem::removeListener(const SDL_EventType type,
-                                    std::function<void(SDL_Event)> listener) {
+bool drakon::EventSystem::removeListener(
+    const SDL_EventType type, std::function<void(SDL_Event)> listener) {
   auto it = listeners.find(type);
   if (it != listeners.end()) {
     auto &list = it->second;
-    for (auto it = list.begin(); it != list.end(); ++it) {
-      const auto &existing = *it;
+    for (auto findIt = list.begin(); findIt != list.end(); ++findIt) {
+      const auto &existing = *findIt;
       if (existing.target_type() == listener.target_type() &&
           existing.target<void(SDL_Event)>() ==
               listener.target<void(SDL_Event)>()) {
-        list.erase(it);
+        list.erase(findIt);
         return true;
       }
     }

@@ -9,7 +9,8 @@ drakon::Game::Game(const std::string_view title, int width, int height)
   systems = std::vector<std::shared_ptr<drakon::System>>();
   INIT_SYSTEM(eventSystem, drakon::EventSystem);
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_CreateWindowAndRenderer(title.data(), 640, 480, 0, &window, &renderer);
+  SDL_CreateWindowAndRenderer(title.data(), width, height, 0, &window,
+                              &renderer);
 }
 
 drakon::Game::~Game() {
