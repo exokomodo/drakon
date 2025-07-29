@@ -30,10 +30,6 @@ set(COMPILER_FLAGS
         -Wimplicit-fallthrough # warn on statements that fallthrough without an explicit annotation
         # GCC-specific
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
-        -Wduplicated-cond # warn if if / else chain has duplicated conditions
-        -Wduplicated-branches # warn if if / else branches have duplicated code
-        -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
-        -Wuseless-cast # warn if you perform a cast to the same type
     )
 set(SOURCE_FILES
     src/drakon.cpp

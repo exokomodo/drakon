@@ -1,4 +1,5 @@
 #include "HelloGame.h"
+#include <drakon/error.h>
 #include <iostream>
 
 int main() {

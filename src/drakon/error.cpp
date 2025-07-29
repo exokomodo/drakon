@@ -11,6 +11,6 @@ drakon::Error::Error(const std::string_view _message) {
   return message;
 }
 
-std::ostream &operator<<(std::ostream &os, const drakon::Error &error) {
+std::ostream &drakon::operator<<(std::ostream &os, const drakon::Error &error) {
   return os << "Error: " << error.getMessage();
 }
