@@ -21,8 +21,8 @@ struct EventSystem : public System {
   std::optional<Error> enqueue(const SDL_Event &event);
   std::optional<Error> addListener(const SDL_EventType type,
                                    std::function<void(SDL_Event)> listener);
-  const bool removeListener(const SDL_EventType type,
-                            std::function<void(SDL_Event)> listener);
+  bool removeListener(const SDL_EventType type,
+                      std::function<void(SDL_Event)> listener);
   std::optional<Error> process() override;
 
 private:
