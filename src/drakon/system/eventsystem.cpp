@@ -1,11 +1,11 @@
 #include <drakon/system/eventsystem.h>
 
 drakon::EventSystem::EventSystem() {
-  eventQueue = std::queue<SDL_Event>(); // Initialize the event queue
+  eventQueue = std::queue<drakon::Event>(); // Initialize the event queue
 }
 
 std::optional<drakon::Error>
-drakon::EventSystem::enqueue(const SDL_Event &event) {
+drakon::EventSystem::enqueue(const drakon::Event &event) {
   try {
     eventQueue.push(event);
   } catch (const std::exception &e) {
@@ -15,13 +15,13 @@ drakon::EventSystem::enqueue(const SDL_Event &event) {
 }
 
 std::optional<drakon::Error>
-drakon::EventSystem::addListener(const SDL_EventType type,
-                                 std::function<void(SDL_Event)> listener) {
+drakon::EventSystem::addListener(const drakon::EventType type,
+                                 drakon::EventSystem::Listener listener) {
   auto &vec = listeners[type];
   for (const auto &existing : vec) {
     if (existing.target_type() == listener.target_type() &&
-        existing.target<void(SDL_Event)>() ==
-            listener.target<void(SDL_Event)>()) {
+        existing.target<void(drakon::Event &)>() ==
+            listener.target<void(drakon::Event &)>()) {
       return Error("Listener already registered for this event type.");
     }
   }
@@ -30,7 +30,7 @@ drakon::EventSystem::addListener(const SDL_EventType type,
 }
 
 bool drakon::EventSystem::removeListener(
-    const SDL_EventType type, std::function<void(SDL_Event)> listener) {
+    const drakon::EventType type, drakon::EventSystem::Listener listener) {
   auto it = listeners.find(type);
   if (it != listeners.end()) {
     auto &list = it->second;
@@ -50,9 +50,9 @@ bool drakon::EventSystem::removeListener(
 std::optional<drakon::Error> drakon::EventSystem::process() {
   // Process all events in the queue and notify listeners.
   while (!eventQueue.empty()) {
-    SDL_Event event = eventQueue.front();
+    auto event = eventQueue.front();
     eventQueue.pop();
-    auto it = listeners.find(static_cast<SDL_EventType>(event.type));
+    auto it = listeners.find(static_cast<drakon::EventType>(event.getType()));
     if (it != listeners.end()) {
       for (const auto &listener : it->second) {
         listener(event);
