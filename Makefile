@@ -10,7 +10,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CMAKE_OS_FLAGS :=
 else ifeq ($(UNAME_S),Darwin)
-	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_C_COMPILER=/opt/homebrew/bin/gcc-13 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/gcc-13
+	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/gcc-13
 endif
 
 .PHONY: setup/ubuntu
