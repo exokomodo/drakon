@@ -11,5 +11,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
 add_executable(hello WIN32 main.cpp)
 
-target_link_libraries(hello SYSTEM drakon)
-target_link_libraries(hello SYSTEM SDL3::SDL3)
+target_link_libraries(hello PRIVATE drakon)
+target_link_libraries(hello PRIVATE SDL3::SDL3)
