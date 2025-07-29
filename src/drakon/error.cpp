@@ -1,5 +1,3 @@
-#pragma once
-
 #include <drakon/error.h>
 
 drakon::Error::Error(const std::string_view message) {
