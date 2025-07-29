@@ -9,8 +9,13 @@
 #include <queue>
 #include <vector>
 
+#define MAKE_LISTENER(name)                                                    \
+  std::function<void(SDL_Event)> name = [this](SDL_Event event)
+
 namespace drakon {
 struct EventSystem : public System {
+  typedef std::function<void(SDL_Event)> Listener;
+
   EventSystem();
   EventSystem(const EventSystem &) = default;
   EventSystem(EventSystem &&) = default;

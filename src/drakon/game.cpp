@@ -4,13 +4,16 @@
   (member) = std::make_shared<type>();                                         \
   systems.push_back(member);
 
-drakon::Game::Game(const std::string_view _title, int _width, int _height)
-    : title(_title), isRunning(false) {
+drakon::Game::Game(std::shared_ptr<drakon::Scene> _activeScene,
+                   std::string_view _title, int _width, int _height)
+    : activeScene(_activeScene), title(_title), isRunning(false) {
+  Game::instance = this;
   systems = std::vector<std::shared_ptr<drakon::System>>();
   INIT_SYSTEM(eventSystem, drakon::EventSystem);
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
+  activeScene->setEventSystem(this->eventSystem);
 }
 
 drakon::Game::~Game() {
@@ -28,6 +31,7 @@ drakon::Game::~Game() {
 std::optional<drakon::Error> drakon::Game::run() {
   isRunning = true;
   SDL_Event event;
+  activeScene->load();
   while (isRunning) {
     // TODO: Consume events into an eventSystem, then dispatch them to the
     // game logic.
@@ -41,9 +45,13 @@ std::optional<drakon::Error> drakon::Game::run() {
       }
     }
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x6C, 0x67, 0xFF);
+    SDL_SetRenderDrawColor(renderer, activeScene->red, activeScene->green,
+                           activeScene->blue, activeScene->alpha);
     SDL_RenderPresent(renderer);
   }
 
   return std::nullopt;
 }
+
+drakon::Game *drakon::Game::instance = nullptr;
+drakon::Game *drakon::Game::getInstance() { return Game::instance; }
