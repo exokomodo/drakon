@@ -10,6 +10,7 @@ int drakon::runSimple(std::string_view title) {
   SDL_Event event;
   while (isRunning) {
     while (SDL_PollEvent(&event)) {
+
       if (event.type == SDL_EVENT_QUIT) {
         isRunning = false;
       }
