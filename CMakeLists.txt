@@ -55,7 +55,7 @@ target_include_directories(drakon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(drakon SYSTEM SDL3::SDL3)
+target_link_libraries(drakon PRIVATE SDL3::SDL3)
 
-add_subdirectory(vendor/SDL3 SYSTEM)
+add_subdirectory(vendor/SDL3)
 add_subdirectory(examples/hello EXCLUDE_FROM_ALL)
