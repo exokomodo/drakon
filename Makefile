@@ -10,7 +10,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CMAKE_OS_FLAGS :=
 else ifeq ($(UNAME_S),Darwin)
-	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
+	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_C_COMPILER=/opt/homebrew/bin/gcc-15 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/gcc-15
 endif
 
 .PHONY: setup/ubuntu
@@ -58,7 +58,8 @@ setup/mac: ## Setup macOS dependencies
 	brew update
 	brew install \
 		clang-format \
-		cmake
+		cmake \
+		gcc@15
 
 build/drakon: build
 .PHONY: build
