@@ -1,33 +1,33 @@
 #pragma once
 
 #include "OtherScene.h"
-#include "drakon/error.h"
-#include "drakon/event.h"
-#include "drakon/scene.h"
+#include <drakon/error>
+#include <drakon/event>
+#include <drakon/scene>
 #include <optional>
 
-struct HelloScene : public drakon::Scene {
+struct HelloScene : public drakon::scene::Scene {
   HelloScene() : HelloScene(nullptr) {}
-  HelloScene(std::shared_ptr<Scene> _nextScene)
+  HelloScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
       : Scene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<Scene> nextScene;
+  std::shared_ptr<drakon::scene::Scene> nextScene;
 
-  std::optional<drakon::Error> load() override {
+  std::optional<drakon::error::Error> load() override {
     if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
-      return drakon::Error("Failed to add key down listener");
+      return drakon::error::Error("Failed to add key down listener");
     }
     return std::nullopt;
   }
 
-  std::optional<drakon::Error> unload() override {
+  std::optional<drakon::error::Error> unload() override {
     if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
-      return drakon::Error("Failed to remove key down listener");
+      return drakon::error::Error("Failed to remove key down listener");
     }
     return std::nullopt;
   }
 
-  std::optional<drakon::Error> process() override {
+  std::optional<drakon::error::Error> process() override {
     // Process logic for HelloScene
     return std::nullopt;
   }
@@ -53,7 +53,7 @@ private:
         if (!nextScene) {
           break;
         }
-        auto game = drakon::Game::getInstance();
+        auto game = drakon::game::Game::getInstance();
         game->setActiveScene(nextScene);
       } break;
       };

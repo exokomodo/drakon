@@ -32,7 +32,6 @@ set(COMPILER_FLAGS
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
     )
 set(SOURCE_FILES
-    src/drakon.cpp
     src/drakon/game.cpp
     src/drakon/error.cpp
     src/drakon/event.cpp

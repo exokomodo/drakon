@@ -1,7 +1,7 @@
 #include "HelloGame.h"
 #include "HelloScene.h"
-#include <drakon/error.h>
-#include <drakon/scene.h>
+#include <drakon/error>
+#include <drakon/scene>
 #include <iostream>
 
 int main() {

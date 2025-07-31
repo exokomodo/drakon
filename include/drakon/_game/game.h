@@ -3,14 +3,14 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
-#include <drakon/error.h>
-#include <drakon/scene.h>
-#include <drakon/system/eventsystem.h>
+#include <drakon/error>
+#include <drakon/scene>
+#include <drakon/system>
 #include <memory>
 #include <optional>
 #include <vector>
 
-namespace drakon {
+namespace drakon::game {
 struct Game {
   Game(const Game &) = default;
   Game &operator=(const Game &) = default;
@@ -18,9 +18,10 @@ struct Game {
   Game &operator=(Game &&) = default;
   static Game *getInstance();
 
-  std::optional<Error> run();
+  std::optional<drakon::error::Error> run();
 
-  std::optional<Error> setActiveScene(std::shared_ptr<Scene> _activeScene) {
+  std::optional<drakon::error::Error>
+  setActiveScene(std::shared_ptr<drakon::scene::Scene> _activeScene) {
     if (activeScene) {
       activeScene->unload();
     }
@@ -30,7 +31,7 @@ struct Game {
   }
 
 protected:
-  std::shared_ptr<Scene> activeScene;
+  std::shared_ptr<drakon::scene::Scene> activeScene;
   std::string_view title;
 #ifdef DRAKON_SDL
   SDL_Window *window;
@@ -38,14 +39,14 @@ protected:
 #endif
   bool isRunning;
 
-  std::vector<std::shared_ptr<System>> systems;
-  std::shared_ptr<EventSystem> eventSystem;
+  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
+  std::shared_ptr<drakon::system::EventSystem> eventSystem;
 
-  Game(std::shared_ptr<Scene> activeScene, const std::string_view title,
-       int width, int height);
+  Game(std::shared_ptr<drakon::scene::Scene> activeScene,
+       const std::string_view title, int width, int height);
   ~Game();
 
 private:
   static Game *instance;
 };
-} // namespace drakon
+} // namespace drakon::game

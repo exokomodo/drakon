@@ -3,15 +3,15 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
-#include <drakon/error.h>
-#include <drakon/system/eventsystem.h>
+#include <drakon/error>
+#include <drakon/system>
 #include <memory>
 #include <optional>
 #include <vector>
 
-namespace drakon {
+namespace drakon::scene {
 struct Scene {
-  std::optional<Error> run();
+  std::optional<drakon::error::Error> run();
 
   Scene();
   Scene(const Uint8 red, const Uint8 green, const Uint8 blue,
@@ -24,19 +24,20 @@ struct Scene {
   Uint8 blue;
   Uint8 alpha;
 
-  virtual std::optional<Error> load() = 0;
-  virtual std::optional<Error> process() = 0;
-  virtual std::optional<Error> unload() = 0;
+  virtual std::optional<drakon::error::Error> load() = 0;
+  virtual std::optional<drakon::error::Error> process() = 0;
+  virtual std::optional<drakon::error::Error> unload() = 0;
 
-  void setEventSystem(std::shared_ptr<drakon::EventSystem> _eventSystem) {
+  void
+  setEventSystem(std::shared_ptr<drakon::system::EventSystem> _eventSystem) {
     eventSystem = _eventSystem;
   }
 
 protected:
-  std::shared_ptr<drakon::EventSystem> eventSystem;
+  std::shared_ptr<drakon::system::EventSystem> eventSystem;
   Scene(const Scene &) = default;
   Scene(Scene &&) = default;
   Scene &operator=(const Scene &) = delete;
   Scene &operator=(Scene &&) = delete;
 };
-} // namespace drakon
+} // namespace drakon::scene

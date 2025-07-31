@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string_view>
 
-namespace drakon {
+namespace drakon::error {
 struct Error {
   Error() = default;
   Error(const Error &) = default;
@@ -22,4 +22,4 @@ struct Error {
 protected:
   std::string_view message;
 };
-} // namespace drakon
+} // namespace drakon::error

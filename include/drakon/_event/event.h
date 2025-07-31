@@ -5,8 +5,8 @@
 #endif
 
 #include <any>
-#include <drakon/error.h>
-#include <drakon/input.h>
+#include <drakon/error>
+#include <drakon/input>
 #include <expected>
 #include <memory>
 #include <optional>

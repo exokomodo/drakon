@@ -1,0 +1,3 @@
+#pragma once
+
+#include <drakon/_error/error.h>

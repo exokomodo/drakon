@@ -1,16 +1,17 @@
-#include <drakon/game.h>
+#include <drakon/event>
+#include <drakon/game>
 
 #define INIT_SYSTEM(member, type)                                              \
   (member) = std::make_shared<type>();                                         \
   systems.push_back(member);
 
-drakon::Game::Game(std::shared_ptr<drakon::Scene> _activeScene,
-                   std::string_view _title, int _width, int _height)
+drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
+                         std::string_view _title, int _width, int _height)
     : activeScene(_activeScene), title(_title), isRunning(false) {
   Game::instance = this;
-  systems = std::vector<std::shared_ptr<drakon::System>>();
+  systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
 #ifdef DRAKON_SDL
-  INIT_SYSTEM(eventSystem, drakon::EventSystem);
+  INIT_SYSTEM(eventSystem, drakon::system::EventSystem);
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
@@ -18,7 +19,7 @@ drakon::Game::Game(std::shared_ptr<drakon::Scene> _activeScene,
   activeScene->setEventSystem(this->eventSystem);
 }
 
-drakon::Game::~Game() {
+drakon::game::Game::~Game() {
 #ifdef DRAKON_SDL
   if (window) {
     SDL_DestroyWindow(window);
@@ -32,7 +33,7 @@ drakon::Game::~Game() {
 #endif
 }
 
-std::optional<drakon::Error> drakon::Game::run() {
+std::optional<drakon::error::Error> drakon::game::Game::run() {
   isRunning = true;
   activeScene->load();
 #ifdef DRAKON_SDL
@@ -65,5 +66,5 @@ std::optional<drakon::Error> drakon::Game::run() {
   return std::nullopt;
 }
 
-drakon::Game *drakon::Game::instance = nullptr;
-drakon::Game *drakon::Game::getInstance() { return Game::instance; }
+drakon::game::Game *drakon::game::Game::instance = nullptr;
+drakon::game::Game *drakon::game::Game::getInstance() { return Game::instance; }

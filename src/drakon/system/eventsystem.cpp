@@ -1,37 +1,38 @@
-#include <drakon/system/eventsystem.h>
+#include <drakon/_system/EventSystem.h>
 
-drakon::EventSystem::EventSystem() {
+drakon::system::EventSystem::EventSystem() {
   eventQueue = std::queue<drakon::event::Event>(); // Initialize the event queue
 }
 
-std::optional<drakon::Error>
-drakon::EventSystem::enqueue(drakon::event::Event event) {
+std::optional<drakon::error::Error>
+drakon::system::EventSystem::enqueue(drakon::event::Event event) {
   try {
     eventQueue.push(event);
   } catch (const std::exception &e) {
-    return Error(e.what());
+    return drakon::error::Error(e.what());
   }
   return std::nullopt;
 }
 
-std::optional<drakon::Error>
-drakon::EventSystem::addListener(const drakon::event::EventType type,
-                                 drakon::EventSystem::Listener listener) {
+std::optional<drakon::error::Error> drakon::system::EventSystem::addListener(
+    const drakon::event::EventType type,
+    drakon::system::EventSystem::Listener listener) {
   auto &vec = listeners[type];
   for (const auto &existing : vec) {
     if (existing.target_type() == listener.target_type() &&
         existing.target<void(drakon::event::Event &)>() ==
             listener.target<void(drakon::event::Event &)>()) {
-      return Error("Listener already registered for this event type.");
+      return drakon::error::Error(
+          "Listener already registered for this event type.");
     }
   }
   vec.push_back(listener);
   return std::nullopt;
 }
 
-bool drakon::EventSystem::removeListener(
+bool drakon::system::EventSystem::removeListener(
     const drakon::event::EventType type,
-    drakon::EventSystem::Listener listener) {
+    drakon::system::EventSystem::Listener listener) {
   auto it = listeners.find(type);
   if (it != listeners.end()) {
     auto &list = it->second;
@@ -48,7 +49,7 @@ bool drakon::EventSystem::removeListener(
   return false;
 }
 
-std::optional<drakon::Error> drakon::EventSystem::process() {
+std::optional<drakon::error::Error> drakon::system::EventSystem::process() {
   // Process all events in the queue and notify listeners.
   while (!eventQueue.empty()) {
     auto event = eventQueue.front();
@@ -63,4 +64,4 @@ std::optional<drakon::Error> drakon::EventSystem::process() {
   return std::nullopt;
 }
 
-bool drakon::EventSystem::isEmpty() const { return eventQueue.empty(); }
+bool drakon::system::EventSystem::isEmpty() const { return eventQueue.empty(); }

@@ -1,7 +1,6 @@
-#include <drakon/event.h>
-#include <drakon/game.h>
-#include <drakon/input.h>
-// #include <drakon/system/eventsystem.h>
+#include <drakon/event>
+#include <drakon/game>
+#include <drakon/input>
 #include <string_view>
 
 static const drakon::event::EventType customQuitType = 0x94FE6828;
@@ -11,10 +10,10 @@ struct CustomEventData : drakon::event::CustomEventData {
   CustomEventData(std::string_view _message) : message(_message) {}
 };
 
-struct HelloGame : public drakon::Game {
-  HelloGame(std::shared_ptr<drakon::Scene> _activeScene,
+struct HelloGame : public drakon::game::Game {
+  HelloGame(std::shared_ptr<drakon::scene::Scene> _activeScene,
             std::string_view _title, int _width, int _height)
-      : drakon::Game(_activeScene, _title, _width, _height) {
+      : drakon::game::Game(_activeScene, _title, _width, _height) {
     eventSystem->addListener(drakon::event::Quit, quit);
     eventSystem->addListener(drakon::event::KeyDown, handleKey);
     eventSystem->addListener(customQuitType, customQuit);

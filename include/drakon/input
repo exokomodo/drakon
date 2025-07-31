@@ -1,0 +1,6 @@
+#pragma once
+
+#include <drakon/_input/input.h>
+#ifdef DRAKON_SDL
+#include <drakon/_input/keycode_sdl.h>
+#endif
