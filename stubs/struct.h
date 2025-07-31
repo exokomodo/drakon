@@ -1,13 +1,13 @@
 #pragma once
 
-#include <drakon/error.h>
+#include <drakon/error>
 #include <optional>
 
 namespace drakon {
 struct Struct {
   Struct() {}
 
-  std::optional<Error> someMethod() { return std::nullopt; }
+  std::optional<drakon::error::Error> someMethod() { return std::nullopt; }
 
 private:
   Struct(const Struct &) = default;

@@ -3,9 +3,9 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
-#include <drakon/error.h>
-#include <drakon/event.h>
-#include <drakon/system/interface.h>
+#include <drakon/_system/ISystem.h>
+#include <drakon/error>
+#include <drakon/event>
 #include <functional>
 #include <map>
 #include <optional>
@@ -16,8 +16,8 @@
   std::function<void(drakon::event::Event)> name = [this](                     \
       drakon::event::Event event)
 
-namespace drakon {
-struct EventSystem : public System {
+namespace drakon::system {
+struct EventSystem : public ISystem {
   typedef std::function<void(drakon::event::Event)> Listener;
 
   EventSystem();
@@ -27,11 +27,11 @@ struct EventSystem : public System {
   EventSystem &operator=(EventSystem &&) = default;
   ~EventSystem() = default;
 
-  std::optional<Error> enqueue(drakon::event::Event event);
-  std::optional<Error> addListener(const drakon::event::EventType type,
-                                   Listener listener);
+  std::optional<drakon::error::Error> enqueue(drakon::event::Event event);
+  std::optional<drakon::error::Error>
+  addListener(const drakon::event::EventType type, Listener listener);
   bool removeListener(const drakon::event::EventType type, Listener listener);
-  std::optional<Error> process() override;
+  std::optional<drakon::error::Error> process() override;
 
 private:
   typedef std::vector<Listener> EventListenerList;
@@ -42,4 +42,4 @@ private:
 
   bool isEmpty() const;
 };
-} // namespace drakon
+} // namespace drakon::system

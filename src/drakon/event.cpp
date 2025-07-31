@@ -1,4 +1,4 @@
-#include "drakon/event.h"
+#include <drakon/event>
 
 #ifdef DRAKON_SDL
 drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {

@@ -6,6 +6,7 @@
         "**/vendor": true
     },
     "files.associations": {
+        "**/include/**": "cpp",
         "*.fs": "fsharp",
         "*.fsproj": "xml",
         "optional": "cpp",

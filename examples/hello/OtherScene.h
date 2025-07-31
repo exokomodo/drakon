@@ -1,33 +1,33 @@
 #pragma once
 
-#include "drakon/error.h"
-#include "drakon/scene.h"
+#include <drakon/error>
+#include <drakon/scene>
 #include <optional>
 
 struct HelloScene;
 
-struct OtherScene : public drakon::Scene {
+struct OtherScene : public drakon::scene::Scene {
   OtherScene() : OtherScene(nullptr) {}
-  OtherScene(std::shared_ptr<Scene> _nextScene)
+  OtherScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
       : Scene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<Scene> nextScene;
+  std::shared_ptr<drakon::scene::Scene> nextScene;
 
-  std::optional<drakon::Error> load() override {
+  std::optional<drakon::error::Error> load() override {
     if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
-      return drakon::Error("Failed to add key down listener");
+      return drakon::error::Error("Failed to add key down listener");
     }
     return std::nullopt;
   }
 
-  std::optional<drakon::Error> unload() override {
+  std::optional<drakon::error::Error> unload() override {
     if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
-      return drakon::Error("Failed to remove key down listener");
+      return drakon::error::Error("Failed to remove key down listener");
     }
     return std::nullopt;
   }
 
-  std::optional<drakon::Error> process() override {
+  std::optional<drakon::error::Error> process() override {
     // Process logic for HelloScene
     return std::nullopt;
   }
@@ -53,7 +53,7 @@ private:
         if (!nextScene) {
           break;
         }
-        auto game = drakon::Game::getInstance();
+        auto game = drakon::game::Game::getInstance();
         game->setActiveScene(nextScene);
       } break;
       };
