@@ -67,8 +67,15 @@ struct Event {
     return static_pointer_cast<T>(data);
   }
 
+  template <typename T>
+  Event(const EventType _type, T &&data)
+      : type(_type),
+        data(std::make_shared<std::decay_t<T>>(std::forward<T>(data))) {
+    static_assert(std::is_base_of_v<EventData, std::decay_t<T>>,
+                  "T must inherit from EventData");
+  }
   Event(const EventType _type, std::shared_ptr<EventData> _data)
-      : type(_type), data(std::move(_data)) {}
+      : type(_type), data(_data) {}
   Event(const EventType _type) : type(_type) {}
   Event(const Event &other) : type(other.type), data(other.data) {}
   ~Event() = default;

@@ -25,8 +25,8 @@ private:
     if (event.type == drakon::event::KeyDown) {
       const auto input = event.asKey()->input;
       if (input == drakon::input::Escape) {
-        eventSystem->enqueue(drakon::event::Event(
-            customQuitType, std::make_shared<CustomEventData>("Goodbye!")));
+        eventSystem->enqueue(
+            drakon::event::Event(customQuitType, CustomEventData("Goodbye!")));
       }
     }
   };

@@ -6,12 +6,12 @@ drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {
     return drakon::event::Event(Quit);
   case SDL_EVENT_KEY_DOWN:
     return drakon::event::Event(
-        KeyDown, std::make_shared<KeyEventData>(
-                     static_cast<drakon::input::InputType>(event.key.key)));
+        KeyDown,
+        KeyEventData(static_cast<drakon::input::InputType>(event.key.key)));
   case SDL_EVENT_KEY_UP:
     return drakon::event::Event(
-        KeyUp, std::make_shared<KeyEventData>(
-                   static_cast<drakon::input::InputType>(event.key.key)));
+        KeyUp,
+        KeyEventData(static_cast<drakon::input::InputType>(event.key.key)));
   default:
     return drakon::event::Event(drakon::event::None);
   }
