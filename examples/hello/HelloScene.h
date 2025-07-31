@@ -13,14 +13,14 @@ struct HelloScene : public drakon::Scene {
   std::shared_ptr<Scene> nextScene;
 
   std::optional<drakon::Error> load() override {
-    if (!eventSystem->addListener(drakon::KeyDown, changeColor)) {
+    if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
       return drakon::Error("Failed to add key down listener");
     }
     return std::nullopt;
   }
 
   std::optional<drakon::Error> unload() override {
-    if (!eventSystem->removeListener(drakon::KeyDown, changeColor)) {
+    if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
       return drakon::Error("Failed to remove key down listener");
     }
     return std::nullopt;
@@ -33,22 +33,22 @@ struct HelloScene : public drakon::Scene {
 
 private:
   MAKE_LISTENER(changeColor) {
-    const auto keyEvent = static_cast<drakon::KeyEvent &>(event);
+    const auto keyEvent = static_cast<drakon::event::KeyEvent &>(event);
     const auto code = keyEvent.getKeyCode();
     switch (code) {
-    case SDLK_LEFT: {
+    case drakon::input::Left: {
       red = std::max(0x00, red - 10);
     } break;
-    case SDLK_RIGHT: {
+    case drakon::input::Right: {
       red = std::min(red + 10, 0xFF);
     } break;
-    case SDLK_UP: {
+    case drakon::input::Up: {
       green = std::max(0x00, green - 10);
     } break;
-    case SDLK_DOWN: {
+    case drakon::input::Down: {
       green = std::min(green + 10, 0xFF);
     } break;
-    case SDLK_SPACE: {
+    case drakon::input::Space: {
       if (!nextScene) {
         break;
       }
