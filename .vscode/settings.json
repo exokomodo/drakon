@@ -43,6 +43,7 @@
         "__hash_table": "cpp",
         "array": "cpp",
         "complex": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "any": "cpp"
     }
 }

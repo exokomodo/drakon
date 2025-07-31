@@ -2,6 +2,7 @@
 
 #include "OtherScene.h"
 #include "drakon/error.h"
+#include "drakon/event.h"
 #include "drakon/scene.h"
 #include <optional>
 
@@ -13,14 +14,14 @@ struct HelloScene : public drakon::Scene {
   std::shared_ptr<Scene> nextScene;
 
   std::optional<drakon::Error> load() override {
-    if (!eventSystem->addListener(drakon::KeyDown, changeColor)) {
+    if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
       return drakon::Error("Failed to add key down listener");
     }
     return std::nullopt;
   }
 
   std::optional<drakon::Error> unload() override {
-    if (!eventSystem->removeListener(drakon::KeyDown, changeColor)) {
+    if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
       return drakon::Error("Failed to remove key down listener");
     }
     return std::nullopt;
@@ -33,28 +34,30 @@ struct HelloScene : public drakon::Scene {
 
 private:
   MAKE_LISTENER(changeColor) {
-    const auto keyEvent = static_cast<drakon::KeyEvent &>(event);
-    const auto code = keyEvent.getKeyCode();
-    switch (code) {
-    case SDLK_LEFT: {
-      red = std::max(0x00, red - 10);
-    } break;
-    case SDLK_RIGHT: {
-      red = std::min(red + 10, 0xFF);
-    } break;
-    case SDLK_UP: {
-      green = std::max(0x00, green - 10);
-    } break;
-    case SDLK_DOWN: {
-      green = std::min(green + 10, 0xFF);
-    } break;
-    case SDLK_SPACE: {
-      if (!nextScene) {
-        break;
-      }
-      auto game = drakon::Game::getInstance();
-      game->setActiveScene(nextScene);
-    } break;
-    };
+    if (event.type == drakon::event::KeyDown) {
+      // TODO
+      const auto input = event.asKey()->input;
+      switch (input) {
+      case drakon::input::Left: {
+        red = std::max(0x00, red - 10);
+      } break;
+      case drakon::input::Right: {
+        red = std::min(red + 10, 0xFF);
+      } break;
+      case drakon::input::Up: {
+        green = std::max(0x00, green - 10);
+      } break;
+      case drakon::input::Down: {
+        green = std::min(green + 10, 0xFF);
+      } break;
+      case drakon::input::Space: {
+        if (!nextScene) {
+          break;
+        }
+        auto game = drakon::Game::getInstance();
+        game->setActiveScene(nextScene);
+      } break;
+      };
+    }
   };
 };

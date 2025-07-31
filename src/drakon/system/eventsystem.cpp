@@ -1,11 +1,11 @@
 #include <drakon/system/eventsystem.h>
 
 drakon::EventSystem::EventSystem() {
-  eventQueue = std::queue<drakon::Event>(); // Initialize the event queue
+  eventQueue = std::queue<drakon::event::Event>(); // Initialize the event queue
 }
 
 std::optional<drakon::Error>
-drakon::EventSystem::enqueue(const drakon::Event &event) {
+drakon::EventSystem::enqueue(drakon::event::Event event) {
   try {
     eventQueue.push(event);
   } catch (const std::exception &e) {
@@ -15,13 +15,13 @@ drakon::EventSystem::enqueue(const drakon::Event &event) {
 }
 
 std::optional<drakon::Error>
-drakon::EventSystem::addListener(const drakon::EventType type,
+drakon::EventSystem::addListener(const drakon::event::EventType type,
                                  drakon::EventSystem::Listener listener) {
   auto &vec = listeners[type];
   for (const auto &existing : vec) {
     if (existing.target_type() == listener.target_type() &&
-        existing.target<void(drakon::Event &)>() ==
-            listener.target<void(drakon::Event &)>()) {
+        existing.target<void(drakon::event::Event &)>() ==
+            listener.target<void(drakon::event::Event &)>()) {
       return Error("Listener already registered for this event type.");
     }
   }
@@ -30,7 +30,8 @@ drakon::EventSystem::addListener(const drakon::EventType type,
 }
 
 bool drakon::EventSystem::removeListener(
-    const drakon::EventType type, drakon::EventSystem::Listener listener) {
+    const drakon::event::EventType type,
+    drakon::EventSystem::Listener listener) {
   auto it = listeners.find(type);
   if (it != listeners.end()) {
     auto &list = it->second;
@@ -52,7 +53,7 @@ std::optional<drakon::Error> drakon::EventSystem::process() {
   while (!eventQueue.empty()) {
     auto event = eventQueue.front();
     eventQueue.pop();
-    auto it = listeners.find(static_cast<drakon::EventType>(event.getType()));
+    auto it = listeners.find(static_cast<drakon::event::EventType>(event.type));
     if (it != listeners.end()) {
       for (const auto &listener : it->second) {
         listener(event);
