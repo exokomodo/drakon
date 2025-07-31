@@ -3,6 +3,7 @@
 #include <drakon/input/input.h>
 
 namespace drakon::input {
+#ifdef DRAKON_SDL
 static const InputType None = 0x00000000;
 static const InputType A = SDLK_A;
 static const InputType AcBack = SDLK_AC_BACK;
@@ -262,4 +263,5 @@ static const InputType Wake = SDLK_WAKE;
 static const InputType X = SDLK_X;
 static const InputType Y = SDLK_Y;
 static const InputType Z = SDLK_Z;
+#endif // DRAKON_SDL
 } // namespace drakon::input
