@@ -11,11 +11,12 @@
 #include <vector>
 
 #define MAKE_LISTENER(name)                                                    \
-  std::function<void(drakon::Event)> name = [this](drakon::Event event)
+  std::function<void(drakon::event::Event)> name = [this](                     \
+      drakon::event::Event event)
 
 namespace drakon {
 struct EventSystem : public System {
-  typedef std::function<void(drakon::Event &)> Listener;
+  typedef std::function<void(drakon::event::Event)> Listener;
 
   EventSystem();
   EventSystem(const EventSystem &) = default;
@@ -24,16 +25,17 @@ struct EventSystem : public System {
   EventSystem &operator=(EventSystem &&) = default;
   ~EventSystem() = default;
 
-  std::optional<Error> enqueue(const drakon::Event &event);
-  std::optional<Error> addListener(const drakon::EventType type,
+  std::optional<Error> enqueue(drakon::event::Event event);
+  std::optional<Error> addListener(const drakon::event::EventType type,
                                    Listener listener);
-  bool removeListener(const EventType type, Listener listener);
+  bool removeListener(const drakon::event::EventType type, Listener listener);
   std::optional<Error> process() override;
 
 private:
   typedef std::vector<Listener> EventListenerList;
-  typedef std::map<drakon::EventType, EventListenerList> EventListenerMap;
-  std::queue<drakon::Event> eventQueue;
+  typedef std::map<drakon::event::EventType, EventListenerList>
+      EventListenerMap;
+  std::queue<drakon::event::Event> eventQueue;
   EventListenerMap listeners;
 
   bool isEmpty() const;

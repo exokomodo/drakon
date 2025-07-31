@@ -1,8 +1,15 @@
 #include <drakon/event.h>
-#include <drakon/event/system.h>
 #include <drakon/game.h>
 #include <drakon/input.h>
+// #include <drakon/system/eventsystem.h>
 #include <string_view>
+
+static const drakon::event::EventType customQuitType = 0x94FE6828;
+struct CustomEventData : drakon::event::CustomEventData {
+  std::string_view message;
+
+  CustomEventData(std::string_view _message) : message(_message) {}
+};
 
 struct HelloGame : public drakon::Game {
   HelloGame(std::shared_ptr<drakon::Scene> _activeScene,
@@ -10,17 +17,23 @@ struct HelloGame : public drakon::Game {
       : drakon::Game(_activeScene, _title, _width, _height) {
     eventSystem->addListener(drakon::event::Quit, quit);
     eventSystem->addListener(drakon::event::KeyDown, handleKey);
+    eventSystem->addListener(customQuitType, customQuit);
   }
 
 private:
   MAKE_LISTENER(handleKey) {
-    const auto keyEvent = reinterpret_cast<drakon::event::KeyEvent &>(event);
-    const auto code = keyEvent.getKeyCode();
-    const auto escape = drakon::input::Escape;
-
-    if (code == escape) {
-      quit(event);
+    if (event.type == drakon::event::KeyDown) {
+      const auto input = event.asKey()->input;
+      if (input == drakon::input::Escape) {
+        eventSystem->enqueue(drakon::event::Event(
+            customQuitType, std::make_shared<CustomEventData>("Goodbye!")));
+      }
     }
   };
   MAKE_LISTENER(quit) { isRunning = false; };
+  MAKE_LISTENER(customQuit) {
+    std::cout << "Hello from " << event.asCustom<CustomEventData>()->message
+              << std::endl;
+    isRunning = false;
+  };
 };

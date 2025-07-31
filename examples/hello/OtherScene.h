@@ -34,28 +34,30 @@ struct OtherScene : public drakon::Scene {
 
 private:
   MAKE_LISTENER(changeColor) {
-    const auto keyEvent = static_cast<drakon::event::KeyEvent &>(event);
-    const auto code = keyEvent.getKeyCode();
-    switch (code) {
-    case drakon::input::Left: {
-      blue = std::max(0x00, blue - 10);
-    } break;
-    case drakon::input::Right: {
-      blue = std::min(blue + 10, 0xFF);
-    } break;
-    case drakon::input::Up: {
-      red = std::max(0x00, red - 10);
-    } break;
-    case drakon::input::Down: {
-      red = std::min(red + 10, 0xFF);
-    } break;
-    case drakon::input::Space: {
-      if (!nextScene) {
-        break;
-      }
-      auto game = drakon::Game::getInstance();
-      game->setActiveScene(nextScene);
-    } break;
-    };
+    if (event.type == drakon::event::KeyDown) {
+      // TODO
+      // auto code = 1;
+      // switch (code) {
+      // case drakon::input::Left: {
+      //   blue = std::max(0x00, blue - 10);
+      // } break;
+      // case drakon::input::Right: {
+      //   blue = std::min(blue + 10, 0xFF);
+      // } break;
+      // case drakon::input::Up: {
+      //   red = std::max(0x00, red - 10);
+      // } break;
+      // case drakon::input::Down: {
+      //   red = std::min(red + 10, 0xFF);
+      // } break;
+      // case drakon::input::Space: {
+      //   if (!nextScene) {
+      //     break;
+      //   }
+      //   auto game = drakon::Game::getInstance();
+      //   game->setActiveScene(nextScene);
+      // } break;
+      // };
+    }
   };
 };

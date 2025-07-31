@@ -34,11 +34,13 @@ std::optional<drakon::Error> drakon::Game::run() {
   activeScene->load();
   while (isRunning) {
     while (SDL_PollEvent(&sdlEvent)) {
-      const auto event = drakon::Event::fromSDL(sdlEvent);
-      if (!event) {
-        continue; // Skip unrecognized events
+      auto event = drakon::event::Event::fromSDL(sdlEvent);
+      if (!event.isNone()) {
+        auto error = eventSystem->enqueue(event);
+        if (error) {
+          return error;
+        }
       }
-      eventSystem->enqueue(*event);
     }
     for (auto &system : systems) {
       auto error = system->process();

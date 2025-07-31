@@ -2,6 +2,7 @@
 
 #include "OtherScene.h"
 #include "drakon/error.h"
+#include "drakon/event.h"
 #include "drakon/scene.h"
 #include <optional>
 
@@ -33,28 +34,30 @@ struct HelloScene : public drakon::Scene {
 
 private:
   MAKE_LISTENER(changeColor) {
-    const auto keyEvent = static_cast<drakon::event::KeyEvent &>(event);
-    const auto code = keyEvent.getKeyCode();
-    switch (code) {
-    case drakon::input::Left: {
-      red = std::max(0x00, red - 10);
-    } break;
-    case drakon::input::Right: {
-      red = std::min(red + 10, 0xFF);
-    } break;
-    case drakon::input::Up: {
-      green = std::max(0x00, green - 10);
-    } break;
-    case drakon::input::Down: {
-      green = std::min(green + 10, 0xFF);
-    } break;
-    case drakon::input::Space: {
-      if (!nextScene) {
-        break;
-      }
-      auto game = drakon::Game::getInstance();
-      game->setActiveScene(nextScene);
-    } break;
-    };
+    if (event.type == drakon::event::KeyDown) {
+      // TODO
+      const auto input = event.asKey()->input;
+      switch (input) {
+      case drakon::input::Left: {
+        red = std::max(0x00, red - 10);
+      } break;
+      case drakon::input::Right: {
+        red = std::min(red + 10, 0xFF);
+      } break;
+      case drakon::input::Up: {
+        green = std::max(0x00, green - 10);
+      } break;
+      case drakon::input::Down: {
+        green = std::min(green + 10, 0xFF);
+      } break;
+      case drakon::input::Space: {
+        if (!nextScene) {
+          break;
+        }
+        auto game = drakon::Game::getInstance();
+        game->setActiveScene(nextScene);
+      } break;
+      };
+    }
   };
 };
