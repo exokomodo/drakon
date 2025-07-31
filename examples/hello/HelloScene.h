@@ -35,7 +35,6 @@ struct HelloScene : public drakon::Scene {
 private:
   MAKE_LISTENER(changeColor) {
     if (event.type == drakon::event::KeyDown) {
-      // TODO
       const auto input = event.asKey()->input;
       switch (input) {
       case drakon::input::Left: {
