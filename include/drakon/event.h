@@ -68,9 +68,9 @@ struct Event {
   }
 
   template <typename T>
-  Event(const EventType _type, T &&data)
+  Event(const EventType _type, T &&_data)
       : type(_type),
-        data(std::make_shared<std::decay_t<T>>(std::forward<T>(data))) {
+        data(std::make_shared<std::decay_t<T>>(std::forward<T>(_data))) {
     static_assert(std::is_base_of_v<EventData, std::decay_t<T>>,
                   "T must inherit from EventData");
   }
