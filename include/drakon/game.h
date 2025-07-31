@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
+#endif
 #include <drakon/error.h>
 #include <drakon/scene.h>
 #include <drakon/system/eventsystem.h>
@@ -30,8 +32,10 @@ struct Game {
 protected:
   std::shared_ptr<Scene> activeScene;
   std::string_view title;
+#ifdef DRAKON_SDL
   SDL_Window *window;
   SDL_Renderer *renderer;
+#endif
   bool isRunning;
 
   std::vector<std::shared_ptr<System>> systems;

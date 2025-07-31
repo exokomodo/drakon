@@ -48,6 +48,10 @@ target_compile_options(
     # C++ warnings
     $<$<COMPILE_LANGUAGE:CXX>:${COMPILER_FLAGS}>
 )
+target_compile_definitions(
+    drakon PRIVATE
+    DRAKON_SDL
+)
 
 target_include_directories(drakon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -1,6 +1,7 @@
 #include <drakon.h>
 
 int drakon::runSimple(std::string_view title) {
+#ifdef DRAKON_SDL
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
@@ -24,5 +25,6 @@ int drakon::runSimple(std::string_view title) {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
+#endif
   return 0;
 }

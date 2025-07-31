@@ -38,8 +38,8 @@ bool drakon::EventSystem::removeListener(
     for (auto findIt = list.begin(); findIt != list.end(); ++findIt) {
       const auto &existing = *findIt;
       if (existing.target_type() == listener.target_type() &&
-          existing.target<void(SDL_Event)>() ==
-              listener.target<void(SDL_Event)>()) {
+          existing.target<void(drakon::event::Event)>() ==
+              listener.target<void(drakon::event::Event)>()) {
         list.erase(findIt);
         return true;
       }
