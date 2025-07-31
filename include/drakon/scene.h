@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
+#endif
 #include <drakon/error.h>
 #include <drakon/system/eventsystem.h>
 #include <memory>

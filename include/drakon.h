@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
+#endif
 #include <string_view>
 
 namespace drakon {

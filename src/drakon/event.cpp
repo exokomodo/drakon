@@ -1,5 +1,6 @@
 #include "drakon/event.h"
 
+#ifdef DRAKON_SDL
 drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {
   switch (event.type) {
   case SDL_EVENT_QUIT:
@@ -16,6 +17,7 @@ drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {
     return drakon::event::Event(drakon::event::None);
   }
 }
+#endif
 
 bool drakon::event::Event::isNone() { return type == None; }
 bool drakon::event::Event::isKey() { return type == KeyUp || type == KeyDown; }

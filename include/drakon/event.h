@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
+#endif
 
 #include <any>
 #include <drakon/error.h>
@@ -30,15 +32,18 @@ struct MouseEventData : EventData {
 };
 
 struct WindowEventData : EventData {
+#ifdef DRAKON_SDL
   SDL_Event sdl;
-
   WindowEventData(SDL_Event _sdl) : sdl(_sdl) {}
+#endif
 };
 
 struct ApplicationEventData : EventData {
+#ifdef DRAKON_SDL
   SDL_Event sdl;
 
   ApplicationEventData(SDL_Event _sdl) : sdl(_sdl) {}
+#endif
 };
 
 struct CustomEventData : EventData {};
@@ -46,7 +51,9 @@ struct CustomEventData : EventData {};
 struct Event {
   const EventType type;
   const std::shared_ptr<EventData> data;
+#ifdef DRAKON_SDL
   static Event fromSDL(const SDL_Event &event);
+#endif
   bool isNone();
   bool isKey();
   bool isMouse();
