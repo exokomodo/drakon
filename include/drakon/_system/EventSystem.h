@@ -27,6 +27,8 @@ struct EventSystem : public ISystem {
   EventSystem &operator=(EventSystem &&) = default;
   ~EventSystem() = default;
 
+  static EventSystem *getInstance();
+
   std::optional<drakon::error::Error> enqueue(drakon::event::Event event);
   std::optional<drakon::error::Error>
   addListener(const drakon::event::EventType type, Listener listener);
@@ -34,6 +36,8 @@ struct EventSystem : public ISystem {
   std::optional<drakon::error::Error> process() override;
 
 private:
+  static EventSystem *instance;
+
   typedef std::vector<Listener> EventListenerList;
   typedef std::map<drakon::event::EventType, EventListenerList>
       EventListenerMap;

@@ -14,6 +14,7 @@ struct HelloScene : public drakon::scene::Scene {
   std::shared_ptr<drakon::scene::Scene> nextScene;
 
   std::optional<drakon::error::Error> load() override {
+    const auto eventSystem = drakon::system::EventSystem::getInstance();
     if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
       return drakon::error::Error("Failed to add key down listener");
     }
@@ -21,6 +22,7 @@ struct HelloScene : public drakon::scene::Scene {
   }
 
   std::optional<drakon::error::Error> unload() override {
+    const auto eventSystem = drakon::system::EventSystem::getInstance();
     if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
       return drakon::error::Error("Failed to remove key down listener");
     }

@@ -1,0 +1,4 @@
+#pragma once
+
+#include <drakon/_component/BehaviorComponent.h>
+#include <drakon/_component/component.h>

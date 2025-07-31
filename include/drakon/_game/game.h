@@ -26,7 +26,6 @@ struct Game {
       activeScene->unload();
     }
     activeScene = _activeScene;
-    activeScene->setEventSystem(eventSystem);
     return activeScene->load();
   }
 
@@ -40,7 +39,6 @@ protected:
   bool isRunning;
 
   std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
-  std::shared_ptr<drakon::system::EventSystem> eventSystem;
 
   Game(std::shared_ptr<drakon::scene::Scene> activeScene,
        const std::string_view title, int width, int height);
