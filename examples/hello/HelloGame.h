@@ -14,6 +14,7 @@ struct HelloGame : public drakon::game::Game {
   HelloGame(std::shared_ptr<drakon::scene::Scene> _activeScene,
             std::string_view _title, int _width, int _height)
       : drakon::game::Game(_activeScene, _title, _width, _height) {
+    const auto eventSystem = drakon::system::EventSystem::getInstance();
     eventSystem->addListener(drakon::event::Quit, quit);
     eventSystem->addListener(drakon::event::KeyDown, handleKey);
     eventSystem->addListener(customQuitType, customQuit);
@@ -24,6 +25,7 @@ private:
     if (event.type == drakon::event::KeyDown) {
       const auto input = event.asKey()->input;
       if (input == drakon::input::Escape) {
+        const auto eventSystem = drakon::system::EventSystem::getInstance();
         eventSystem->enqueue(
             drakon::event::Event(customQuitType, CustomEventData("Goodbye!")));
       }

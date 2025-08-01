@@ -1,6 +1,7 @@
 #include <drakon/_system/EventSystem.h>
 
 drakon::system::EventSystem::EventSystem() {
+  EventSystem::instance = this;
   eventQueue = std::queue<drakon::event::Event>(); // Initialize the event queue
 }
 
@@ -65,3 +66,8 @@ std::optional<drakon::error::Error> drakon::system::EventSystem::process() {
 }
 
 bool drakon::system::EventSystem::isEmpty() const { return eventQueue.empty(); }
+
+drakon::system::EventSystem *drakon::system::EventSystem::instance = nullptr;
+drakon::system::EventSystem *drakon::system::EventSystem::getInstance() {
+  return EventSystem::instance;
+}

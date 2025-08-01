@@ -1,22 +1,41 @@
 #include <drakon/event>
 #include <drakon/game>
 
-#define INIT_SYSTEM(member, type)                                              \
-  (member) = std::make_shared<type>();                                         \
-  systems.push_back(member);
+#define INIT_SYSTEM(type) systems.push_back(std::make_shared<type>());
 
 drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
                          std::string_view _title, int _width, int _height)
     : activeScene(_activeScene), title(_title), isRunning(false) {
   Game::instance = this;
   systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
+  entities = std::list<drakon::entity::Entity>();
+  componentPrints = std::unordered_map<drakon::component::ComponentId,
+                                       drakon::component::PrintComponent>();
+  entityComponentPrints =
+      std::unordered_map<drakon::entity::Entity,
+                         std::vector<drakon::component::ComponentId>>();
+
+  INIT_SYSTEM(drakon::system::PrintSystem);
+  INIT_SYSTEM(drakon::system::EventSystem);
 #ifdef DRAKON_SDL
-  INIT_SYSTEM(eventSystem, drakon::system::EventSystem);
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
 #endif
-  activeScene->setEventSystem(this->eventSystem);
+}
+
+drakon::entity::Entity drakon::game::Game::makeEntity() {
+  auto entity = drakon::entity::Entity();
+  registerEntity(entity);
+  return entity;
+}
+
+bool drakon::game::Game::registerEntity(drakon::entity::Entity entity) {
+  if (std::find(entities.begin(), entities.end(), entity) != entities.end()) {
+    return false; // Entity already exists
+  }
+  entities.push_back(entity);
+  return true;
 }
 
 drakon::game::Game::~Game() {
@@ -33,6 +52,15 @@ drakon::game::Game::~Game() {
 #endif
 }
 
+std::optional<drakon::error::Error> drakon::game::Game::setActiveScene(
+    std::shared_ptr<drakon::scene::Scene> _activeScene) {
+  if (activeScene) {
+    activeScene->unload();
+  }
+  activeScene = _activeScene;
+  return activeScene->load();
+}
+
 std::optional<drakon::error::Error> drakon::game::Game::run() {
   isRunning = true;
   activeScene->load();
@@ -43,7 +71,7 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
       auto event = drakon::event::Event::fromSDL(sdlEvent);
 #endif
       if (!event.isNone()) {
-        auto error = eventSystem->enqueue(event);
+        auto error = drakon::system::EventSystem::getInstance()->enqueue(event);
         if (error) {
           return error;
         }

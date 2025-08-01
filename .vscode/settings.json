@@ -1,5 +1,9 @@
 {
     "editor.formatOnSave": true,
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnOpen": false,
+    "cmake.skipConfigureIfCachePresent": true,
+    "cmake.automaticReconfigure": false,
     "search.exclude": {
         "**/build": true,
         "**/sdlwiki": true,

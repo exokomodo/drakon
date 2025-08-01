@@ -36,7 +36,10 @@ set(SOURCE_FILES
     src/drakon/error.cpp
     src/drakon/event.cpp
     src/drakon/scene.cpp
-    src/drakon/system/eventsystem.cpp
+    src/drakon/entity/entity.cpp
+    src/drakon/component/component.cpp
+    src/drakon/system/EventSystem.cpp
+    src/drakon/system/PrintSystem.cpp
 )
 add_library(drakon SHARED STATIC
     ${SOURCE_FILES}
