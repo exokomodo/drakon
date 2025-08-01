@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 
 #include <drakon/_component/component.h>
 #include <drakon/error>
