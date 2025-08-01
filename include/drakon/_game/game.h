@@ -3,9 +3,12 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
+#include <drakon/component>
+#include <drakon/entity>
 #include <drakon/error>
 #include <drakon/scene>
 #include <drakon/system>
+#include <list>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -21,13 +24,46 @@ struct Game {
   std::optional<drakon::error::Error> run();
 
   std::optional<drakon::error::Error>
-  setActiveScene(std::shared_ptr<drakon::scene::Scene> _activeScene) {
-    if (activeScene) {
-      activeScene->unload();
+  setActiveScene(std::shared_ptr<drakon::scene::Scene> _activeScene);
+
+  drakon::entity::Entity makeEntity();
+  bool registerEntity(drakon::entity::Entity entity);
+
+  // NOTE: Should be a friend of Entity
+  template <typename TComponent, typename... TArgs>
+  std::optional<drakon::error::Error>
+  addComponent(drakon::entity::Entity entity, TArgs &&...args) {
+    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
+                  "TComponent must inherit from Component");
+    if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
+      return drakon::error::Error("Entity does not exist");
     }
-    activeScene = _activeScene;
-    return activeScene->load();
+    auto component = TComponent(std::forward<TArgs>(args)...);
+    if constexpr (std::is_same_v<TComponent,
+                                 drakon::component::PrintComponent>) {
+      if (entityComponentPrints.find(entity) == entityComponentPrints.end()) {
+        entityComponentPrints.insert(
+            {entity, std::vector<drakon::component::ComponentId>()});
+      }
+      entityComponentPrints.at(entity).push_back(component.id);
+      componentPrints.insert({component.id, component});
+    }
+    return std::nullopt;
   }
+
+  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
+
+  Game(std::shared_ptr<drakon::scene::Scene> activeScene,
+       const std::string_view title, int width, int height);
+  ~Game();
+
+  std::list<drakon::entity::Entity> entities;
+  std::unordered_map<drakon::component::ComponentId,
+                     drakon::component::PrintComponent>
+      componentPrints;
+  std::unordered_map<drakon::entity::Entity,
+                     std::vector<drakon::component::ComponentId>>
+      entityComponentPrints;
 
 protected:
   std::shared_ptr<drakon::scene::Scene> activeScene;
@@ -37,12 +73,6 @@ protected:
   SDL_Renderer *renderer;
 #endif
   bool isRunning;
-
-  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
-
-  Game(std::shared_ptr<drakon::scene::Scene> activeScene,
-       const std::string_view title, int width, int height);
-  ~Game();
 
 private:
   static Game *instance;

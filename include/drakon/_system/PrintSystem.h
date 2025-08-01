@@ -13,14 +13,13 @@
 #include <vector>
 
 namespace drakon::system {
-struct BehaviorSystem : public ISystem {
-
-  BehaviorSystem();
-  BehaviorSystem(const BehaviorSystem &) = default;
-  BehaviorSystem(BehaviorSystem &&) = default;
-  BehaviorSystem &operator=(const BehaviorSystem &) = default;
-  BehaviorSystem &operator=(BehaviorSystem &&) = default;
-  ~BehaviorSystem() = default;
+struct PrintSystem : public ISystem {
+  PrintSystem() = default;
+  PrintSystem(const PrintSystem &) = default;
+  PrintSystem(PrintSystem &&) = default;
+  PrintSystem &operator=(const PrintSystem &) = default;
+  PrintSystem &operator=(PrintSystem &&) = default;
+  ~PrintSystem() = default;
 
   std::optional<drakon::error::Error> process() override;
 };

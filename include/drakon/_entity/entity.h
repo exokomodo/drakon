@@ -4,26 +4,11 @@
 #include <memory>
 #include <vector>
 
+#include <drakon/component>
+
 namespace drakon::entity {
 
-typedef unsigned long EntityId;
+typedef unsigned long Entity;
 
-struct Entity {
-  const EntityId id;
-
-  Entity() : id(Entity::getNextId()) {}
-
-  ~Entity() = default;
-
-  Entity(const Entity &) = default;
-  Entity(Entity &&) = default;
-  Entity &operator=(const Entity &) = default;
-  Entity &operator=(Entity &&) = default;
-
-  static EntityId getNextId() { return nextId++; }
-
-private:
-  static std::atomic_uint nextId;
-  std::vector<std::unique_ptr<void>> components;
-};
+Entity getNextEntity();
 } // namespace drakon::entity

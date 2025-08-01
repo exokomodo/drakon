@@ -8,21 +8,21 @@ namespace drakon::component {
 
 typedef unsigned long ComponentId;
 
+ComponentId getNextComponentId();
+
 struct Component {
-  const ComponentId id;
+  ComponentId id;
 
-  Component() : id(Component::getNextId()) {}
+  Component() : id(getNextComponentId()) {}
 
-  virtual ~Component() = default;
-
-  Component(const Component &) = default;
+  // Movable: default move constructor and move assignment
   Component(Component &&) = default;
-  Component &operator=(const Component &) = default;
   Component &operator=(Component &&) = default;
 
-  static ComponentId getNextId() { return nextId++; }
+  // Prevent copying
+  Component(const Component &) = default;
+  Component &operator=(const Component &) = default;
 
-private:
-  static std::atomic_uint nextId;
+  virtual ~Component() = default;
 };
 } // namespace drakon::component

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OtherScene.h"
+#include <drakon/entity>
 #include <drakon/error>
 #include <drakon/event>
 #include <drakon/scene>
@@ -15,9 +16,16 @@ struct HelloScene : public drakon::scene::Scene {
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
-    if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
-      return drakon::error::Error("Failed to add key down listener");
+    auto error = eventSystem->addListener(drakon::event::KeyDown, changeColor);
+    if (error) {
+      return error;
     }
+    const auto game = drakon::game::Game::getInstance();
+    const auto entity = game->makeEntity();
+    game->addComponent<drakon::component::PrintComponent>(
+        entity, std::string_view(
+                    "Hello DRAKON! Press arrow keys to change color, space to "
+                    "switch scene."));
     return std::nullopt;
   }
 

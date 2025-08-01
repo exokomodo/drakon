@@ -7,16 +7,35 @@ drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
                          std::string_view _title, int _width, int _height)
     : activeScene(_activeScene), title(_title), isRunning(false) {
   Game::instance = this;
-  // INIT_SYSTEM(drakon::system::BehaviorSystem);
-#pragma region EventSystem
   systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
-#ifdef DRAKON_SDL
+  entities = std::list<drakon::entity::Entity>();
+  componentPrints = std::unordered_map<drakon::component::ComponentId,
+                                       drakon::component::PrintComponent>();
+  entityComponentPrints =
+      std::unordered_map<drakon::entity::Entity,
+                         std::vector<drakon::component::ComponentId>>();
+
+  INIT_SYSTEM(drakon::system::PrintSystem);
   INIT_SYSTEM(drakon::system::EventSystem);
+#ifdef DRAKON_SDL
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
 #endif
-#pragma endregion
+}
+
+drakon::entity::Entity drakon::game::Game::makeEntity() {
+  auto entity = drakon::entity::Entity();
+  registerEntity(entity);
+  return entity;
+}
+
+bool drakon::game::Game::registerEntity(drakon::entity::Entity entity) {
+  if (std::find(entities.begin(), entities.end(), entity) != entities.end()) {
+    return false; // Entity already exists
+  }
+  entities.push_back(entity);
+  return true;
 }
 
 drakon::game::Game::~Game() {
@@ -31,6 +50,15 @@ drakon::game::Game::~Game() {
   window = nullptr;
   SDL_Quit();
 #endif
+}
+
+std::optional<drakon::error::Error> drakon::game::Game::setActiveScene(
+    std::shared_ptr<drakon::scene::Scene> _activeScene) {
+  if (activeScene) {
+    activeScene->unload();
+  }
+  activeScene = _activeScene;
+  return activeScene->load();
 }
 
 std::optional<drakon::error::Error> drakon::game::Game::run() {
