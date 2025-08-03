@@ -31,6 +31,7 @@ set(COMPILER_FLAGS
         # GCC-specific
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
     )
+
 set(SOURCE_FILES
     src/drakon/game.cpp
     src/drakon/error.cpp
@@ -41,6 +42,7 @@ set(SOURCE_FILES
     src/drakon/system/EventSystem.cpp
     src/drakon/system/PrintSystem.cpp
 )
+
 add_library(drakon SHARED STATIC
     ${SOURCE_FILES}
 )
@@ -59,6 +61,18 @@ target_include_directories(drakon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
+# [GLM] START
+set(GLM_FORCE_CMAKE_VERSION ON CACHE BOOL "Override GLM's max CMake version policy")
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+include(FetchContent)
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG        bf71a834948186f4097caa076cd2663c69a10e1e #refs/tags/1.0.1
+)
+FetchContent_MakeAvailable(glm)
+target_link_libraries(drakon PRIVATE glm::glm)
+# [GLM] END
 target_link_libraries(drakon PRIVATE SDL3::SDL3)
 
 add_subdirectory(vendor/SDL3 SYSTEM)
