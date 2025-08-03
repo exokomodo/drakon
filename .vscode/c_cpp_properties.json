@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/vendor/SDL3/include",
+                "${workspaceFolder}/vendor/glm",
             ],
             "macFrameworkPath": [],
             "intelliSenseMode": "linux-gcc-x64",

@@ -10,10 +10,7 @@ namespace drakon::component {
 struct PrintComponent : public Component {
   PrintComponent(std::string_view _message) : message(_message) {}
 
-  std::optional<drakon::error::Error> process() {
-    std::cout << "PrintComponent: " << message << std::endl;
-    return std::nullopt;
-  }
+  std::optional<drakon::error::Error> process();
 
   std::string_view message;
 };
