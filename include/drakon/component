@@ -2,4 +2,5 @@
 
 #include <drakon/_component/PositionComponent.h>
 #include <drakon/_component/PrintComponent.h>
+#include <drakon/_component/TextureComponent.h>
 #include <drakon/_component/component.h>

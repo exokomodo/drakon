@@ -77,6 +77,11 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
         }
       }
     }
+#ifdef DRAKON_SDL
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, activeScene->red, activeScene->green,
+                           activeScene->blue, activeScene->alpha);
+#endif
     for (auto &system : systems) {
       auto error = system->process();
       if (error) {
@@ -84,9 +89,6 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
       }
     }
 #ifdef DRAKON_SDL
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, activeScene->red, activeScene->green,
-                           activeScene->blue, activeScene->alpha);
     SDL_RenderPresent(renderer);
   }
 #endif
@@ -96,3 +98,7 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
 
 drakon::game::Game *drakon::game::Game::instance = nullptr;
 drakon::game::Game *drakon::game::Game::getInstance() { return Game::instance; }
+#ifdef DRAKON_SDL
+SDL_Window *drakon::game::Game::getWindow() const { return window; }
+SDL_Renderer *drakon::game::Game::getRenderer() const { return renderer; }
+#endif

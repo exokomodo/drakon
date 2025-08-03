@@ -11,6 +11,7 @@
 #include <list>
 #include <memory>
 #include <optional>
+#include <unordered_map>
 #include <vector>
 
 namespace drakon::game {
@@ -29,7 +30,6 @@ struct Game {
   drakon::entity::Entity makeEntity();
   bool registerEntity(drakon::entity::Entity entity);
 
-  // NOTE: Should be a friend of Entity
   template <typename TComponent, typename... TArgs>
   std::optional<drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
@@ -47,6 +47,14 @@ struct Game {
       }
       entityComponentPrints.at(entity).push_back(component.id);
       componentPrints.insert({component.id, component});
+    } else if constexpr (std::is_same_v<TComponent,
+                                        drakon::component::PositionComponent>) {
+      if (entityComponentPositions.find(entity) !=
+          entityComponentPositions.end()) {
+        return drakon::error::Error("Entity already has a PositionComponent");
+      }
+      entityComponentPositions.insert({entity, component.id});
+      componentPositions.insert({component.id, component});
     }
     return std::nullopt;
   }
@@ -58,12 +66,29 @@ struct Game {
   ~Game();
 
   std::list<drakon::entity::Entity> entities;
+
+  std::unordered_map<drakon::component::ComponentId,
+                     drakon::component::PositionComponent>
+      componentPositions;
   std::unordered_map<drakon::component::ComponentId,
                      drakon::component::PrintComponent>
       componentPrints;
+  std::unordered_map<drakon::component::ComponentId,
+                     drakon::component::TextureComponent>
+      componentTextures;
+  std::unordered_map<drakon::entity::Entity, drakon::component::ComponentId>
+      entityComponentPositions;
   std::unordered_map<drakon::entity::Entity,
                      std::vector<drakon::component::ComponentId>>
       entityComponentPrints;
+  std::unordered_map<drakon::entity::Entity,
+                     std::vector<drakon::component::ComponentId>>
+      entityComponentTextures;
+
+#ifdef DRAKON_SDL
+  SDL_Window *getWindow() const;
+  SDL_Renderer *getRenderer() const;
+#endif
 
 protected:
   std::shared_ptr<drakon::scene::Scene> activeScene;
