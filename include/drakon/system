@@ -3,3 +3,4 @@
 #include <drakon/_system/EventSystem.h>
 #include <drakon/_system/ISystem.h>
 #include <drakon/_system/PrintSystem.h>
+#include <drakon/_system/TextureSystem.h>

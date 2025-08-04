@@ -5,7 +5,7 @@ drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
                                                       SDL_Texture *_texture)
     : position(_position), texture(_texture) {}
 drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
-                                                      char *bmp_data,
+                                                      unsigned char *bmp_data,
                                                       size_t bmp_len)
     : position(_position) {
   auto game = drakon::game::Game::getInstance();
@@ -18,4 +18,8 @@ drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
     SDL_Log("Couldn't load icon: %s\n", SDL_GetError());
     throw std::runtime_error("Failed to load image texture");
   }
+}
+
+SDL_Texture *drakon::component::TextureComponent::getTexture() const {
+  return texture;
 }

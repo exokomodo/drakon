@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OtherScene.h"
+#include "smile_icon.h"
 #include <drakon/entity>
 #include <drakon/error>
 #include <drakon/event>
@@ -13,6 +14,8 @@ struct HelloScene : public drakon::scene::Scene {
       : Scene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
 
   std::shared_ptr<drakon::scene::Scene> nextScene;
+  drakon::component::ComponentId positionId;
+  drakon::component::ComponentId textureId;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -26,6 +29,19 @@ struct HelloScene : public drakon::scene::Scene {
         entity, std::string_view(
                     "Hello DRAKON! Press arrow keys to change color, space to "
                     "switch scene."));
+    auto textureRes = game->addComponent<drakon::component::TextureComponent>(
+        entity, glm::vec3{0.0f, 0.0f, 0.0f}, smile_icon_bmp,
+        smile_icon_bmp_len);
+    if (!textureRes) {
+      return textureRes.error();
+    }
+    textureId = *textureRes;
+    auto positionRes = game->addComponent<drakon::component::PositionComponent>(
+        entity, glm::vec3{0.0f, 0.0f, 0.0f});
+    if (!positionRes) {
+      return positionRes.error();
+    }
+    positionId = *positionRes;
     return std::nullopt;
   }
 
@@ -38,7 +54,6 @@ struct HelloScene : public drakon::scene::Scene {
   }
 
   std::optional<drakon::error::Error> process() override {
-    // Process logic for HelloScene
     return std::nullopt;
   }
 
@@ -46,18 +61,24 @@ private:
   MAKE_LISTENER(changeColor) {
     if (event.type == drakon::event::KeyDown) {
       const auto input = event.asKey()->input;
+      auto game = drakon::game::Game::getInstance();
+      const auto speed = 10.0f;
       switch (input) {
       case drakon::input::Left: {
-        red = std::max(0x00, red - 10);
+        game->componentPositions[positionId]->position +=
+            glm::vec3{-speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Right: {
-        red = std::min(red + 10, 0xFF);
+        game->componentPositions[positionId]->position +=
+            glm::vec3{speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Up: {
-        green = std::max(0x00, green - 10);
+        game->componentTextures[textureId]->position +=
+            glm::vec3{0.0f, -speed, 0.0f};
       } break;
       case drakon::input::Down: {
-        green = std::min(green + 10, 0xFF);
+        game->componentTextures[textureId]->position +=
+            glm::vec3{0.0f, speed, 0.0f};
       } break;
       case drakon::input::Space: {
         if (!nextScene) {

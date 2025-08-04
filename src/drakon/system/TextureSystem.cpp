@@ -14,22 +14,29 @@ std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
     if (game->entityComponentPositions.contains(entity)) {
       const auto componentId = game->entityComponentPositions[entity];
       rootPosition +=
-          game->componentPositions.find(componentId)->second.position;
+          game->componentPositions.find(componentId)->second->position;
     }
 #pragma endregion
     const auto components = it->second;
     for (const auto componentId : components) {
       auto textureIt = game->componentTextures.find(componentId);
       if (textureIt != game->componentTextures.end()) {
-        const auto textureComponent = textureIt->second;
+        const auto textureComponent = textureIt->second.get();
         // Process the texture component, e.g., render it
-        const auto position = rootPosition + textureComponent.position;
-        std::cout << "Entity: " << entity
-                  << ", Texture ID: " << textureComponent.id
+        const auto position = rootPosition + textureComponent->position;
+        std::cout << __BASE_FILE__ << ":" << __LINE__ << " "
+                  << "Entity: " << entity
+                  << ", Texture ID: " << textureComponent->id
                   << ", Position: " << position.x << ", " << position.y << ", "
                   << position.z << std::endl;
+        const auto texture = textureComponent->getTexture();
+        const auto dest =
+            SDL_FRect{position.x, position.y, static_cast<float>(texture->w),
+                      static_cast<float>(texture->h)};
+        SDL_RenderTexture(game->getRenderer(), texture, nullptr, &dest);
       } else {
-        std::cerr << "Error: TextureComponent with ID " << componentId
+        std::cerr << __BASE_FILE__ << ":" << __LINE__ << " "
+                  << "Error: TextureComponent with ID " << componentId
                   << " not found." << std::endl;
       }
     }

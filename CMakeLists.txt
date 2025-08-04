@@ -63,6 +63,9 @@ target_compile_definitions(
 
 target_include_directories(drakon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/SDL3/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/SDL3_image/include>
 )
 
 # [GLM] START
@@ -70,7 +73,7 @@ set(GLM_FORCE_CMAKE_VERSION ON CACHE BOOL "Override GLM's max CMake version poli
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
 add_subdirectory(vendor/glm SYSTEM)
-target_link_libraries(drakon PRIVATE glm::glm-header-only)
+target_link_libraries(drakon PRIVATE glm::glm)
 # [GLM] END
 # [SDL3] START
 add_subdirectory(vendor/SDL3 SYSTEM)
