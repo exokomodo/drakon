@@ -31,6 +31,7 @@ set(COMPILER_FLAGS
         # GCC-specific
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
     )
+
 set(SOURCE_FILES
     src/drakon/game.cpp
     src/drakon/error.cpp
@@ -38,9 +39,14 @@ set(SOURCE_FILES
     src/drakon/scene.cpp
     src/drakon/entity/entity.cpp
     src/drakon/component/component.cpp
+    src/drakon/component/PrintComponent.cpp
+    src/drakon/component/PositionComponent.cpp
+    src/drakon/component/TextureComponent.cpp
     src/drakon/system/EventSystem.cpp
     src/drakon/system/PrintSystem.cpp
+    src/drakon/system/TextureSystem.cpp
 )
+
 add_library(drakon SHARED STATIC
     ${SOURCE_FILES}
 )
@@ -57,9 +63,26 @@ target_compile_definitions(
 
 target_include_directories(drakon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/SDL3/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/SDL3_image/include>
 )
 
-target_link_libraries(drakon PRIVATE SDL3::SDL3)
+# [GLM] START
+set(GLM_FORCE_CMAKE_VERSION ON CACHE BOOL "Override GLM's max CMake version policy")
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
+add_subdirectory(vendor/glm SYSTEM)
+target_link_libraries(drakon PRIVATE glm::glm)
+# [GLM] END
+# [SDL3] START
 add_subdirectory(vendor/SDL3 SYSTEM)
+
+target_link_libraries(drakon PRIVATE SDL3::SDL3)
+## [SDL3_image] START
+add_subdirectory(vendor/SDL3_image SYSTEM)
+
+target_link_libraries(drakon PRIVATE SDL3_image::SDL3_image)
+## [SDL3_image] END
+# [SDL3] END
 add_subdirectory(examples/hello EXCLUDE_FROM_ALL)

@@ -5,6 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/vendor/SDL3/include",
+                "${workspaceFolder}/vendor/SDL3_image/include",
+                "${workspaceFolder}/vendor/glm"
             ],
             "macFrameworkPath": [],
             "intelliSenseMode": "linux-gcc-x64",
@@ -12,7 +14,7 @@
             "cppStandard": "c++23",
             "defines": [
                 "DRAKON_SDL"
-            ],
+            ]
         }
     ],
     "version": 4

@@ -9,13 +9,26 @@ drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
   Game::instance = this;
   systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
   entities = std::list<drakon::entity::Entity>();
-  componentPrints = std::unordered_map<drakon::component::ComponentId,
-                                       drakon::component::PrintComponent>();
+  componentPrints =
+      std::unordered_map<drakon::component::ComponentId,
+                         std::unique_ptr<drakon::component::PrintComponent>>();
   entityComponentPrints =
       std::unordered_map<drakon::entity::Entity,
                          std::vector<drakon::component::ComponentId>>();
-
+  componentPositions = std::unordered_map<
+      drakon::component::ComponentId,
+      std::unique_ptr<drakon::component::PositionComponent>>();
+  entityComponentPositions =
+      std::unordered_map<drakon::entity::Entity,
+                         drakon::component::ComponentId>();
+  componentTextures = std::unordered_map<
+      drakon::component::ComponentId,
+      std::unique_ptr<drakon::component::TextureComponent>>();
+  entityComponentTextures =
+      std::unordered_map<drakon::entity::Entity,
+                         std::vector<drakon::component::ComponentId>>();
   INIT_SYSTEM(drakon::system::PrintSystem);
+  INIT_SYSTEM(drakon::system::TextureSystem);
   INIT_SYSTEM(drakon::system::EventSystem);
 #ifdef DRAKON_SDL
   SDL_Init(SDL_INIT_VIDEO);
@@ -77,6 +90,11 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
         }
       }
     }
+#ifdef DRAKON_SDL
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, activeScene->red, activeScene->green,
+                           activeScene->blue, activeScene->alpha);
+#endif
     for (auto &system : systems) {
       auto error = system->process();
       if (error) {
@@ -84,9 +102,6 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
       }
     }
 #ifdef DRAKON_SDL
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, activeScene->red, activeScene->green,
-                           activeScene->blue, activeScene->alpha);
     SDL_RenderPresent(renderer);
   }
 #endif
@@ -96,3 +111,7 @@ std::optional<drakon::error::Error> drakon::game::Game::run() {
 
 drakon::game::Game *drakon::game::Game::instance = nullptr;
 drakon::game::Game *drakon::game::Game::getInstance() { return Game::instance; }
+#ifdef DRAKON_SDL
+SDL_Window *drakon::game::Game::getWindow() const { return window; }
+SDL_Renderer *drakon::game::Game::getRenderer() const { return renderer; }
+#endif
