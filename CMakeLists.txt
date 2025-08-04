@@ -32,23 +32,13 @@ set(COMPILER_FLAGS
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
     )
 
-set(SOURCE_FILES
-    src/drakon/game.cpp
-    src/drakon/error.cpp
-    src/drakon/event.cpp
-    src/drakon/scene.cpp
-    src/drakon/entity/entity.cpp
-    src/drakon/component/component.cpp
-    src/drakon/component/PrintComponent.cpp
-    src/drakon/component/PositionComponent.cpp
-    src/drakon/component/TextureComponent.cpp
-    src/drakon/system/EventSystem.cpp
-    src/drakon/system/PrintSystem.cpp
-    src/drakon/system/TextureSystem.cpp
+file(GLOB_RECURSE DRAKON_SRC
+    src/*.cpp
+    include/*.h
 )
 
 add_library(drakon SHARED STATIC
-    ${SOURCE_FILES}
+    ${DRAKON_SRC}
 )
 
 target_compile_options(
