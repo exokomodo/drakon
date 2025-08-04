@@ -31,6 +31,8 @@ struct Game {
   drakon::entity::Entity makeEntity();
   bool registerEntity(drakon::entity::Entity entity);
 
+  std::list<drakon::entity::Entity> getEntities() const;
+
   template <typename TComponent, typename... TArgs>
   std::expected<drakon::component::ComponentId, drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
@@ -74,11 +76,94 @@ struct Game {
     return componentId;
   }
 
-  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
+  template <typename TComponent>
+  std::optional<std::vector<drakon::component::ComponentId>>
+  getComponents(drakon::entity::Entity entity) {
+    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
+                  "TComponent must inherit from Component");
+    if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
+      return std::nullopt;
+    }
+    if constexpr (std::is_same_v<TComponent,
+                                 drakon::component::PrintComponent>) {
+      if (entityComponentPrints.find(entity) == entityComponentPrints.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional<std::vector<drakon::component::ComponentId>>(
+          entityComponentPrints.at(entity));
+    } else if constexpr (std::is_same_v<TComponent,
+                                        drakon::component::PositionComponent>) {
+      if (entityComponentPositions.find(entity) ==
+          entityComponentPositions.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional<std::vector<drakon::component::ComponentId>>(
+          std::vector<drakon::component::ComponentId>{
+              entityComponentPositions[entity]});
+    } else if constexpr (std::is_same_v<TComponent,
+                                        drakon::component::TextureComponent>) {
+      if (entityComponentTextures.find(entity) ==
+          entityComponentTextures.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional<std::vector<drakon::component::ComponentId>>(
+          entityComponentTextures.at(entity));
+    } else {
+      return std::unexpected(
+          drakon::error::Error("Unsupported component type"));
+    }
+  }
+
+  template <typename TComponent>
+  std::optional<TComponent *>
+  getComponent(drakon::component::ComponentId componentId) {
+    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
+                  "TComponent must inherit from Component");
+    if constexpr (std::is_same_v<TComponent,
+                                 drakon::component::PrintComponent>) {
+      if (componentPrints.find(componentId) == componentPrints.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional(componentPrints[componentId].get());
+    } else if constexpr (std::is_same_v<TComponent,
+                                        drakon::component::PositionComponent>) {
+      if (componentPositions.find(componentId) == componentPositions.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional(componentPositions[componentId].get());
+    } else if constexpr (std::is_same_v<TComponent,
+                                        drakon::component::TextureComponent>) {
+      if (componentTextures.find(componentId) == componentTextures.end()) {
+        return std::nullopt;
+      }
+      return std::make_optional(componentTextures[componentId].get());
+    } else {
+      return std::nullopt; // Unsupported component type
+    }
+  }
 
   Game(std::shared_ptr<drakon::scene::Scene> activeScene,
        const std::string_view title, int width, int height);
   ~Game();
+
+#ifdef DRAKON_SDL
+  SDL_Window *getWindow() const;
+  SDL_Renderer *getRenderer() const;
+#endif
+
+protected:
+  std::shared_ptr<drakon::scene::Scene> activeScene;
+  std::string_view title;
+#ifdef DRAKON_SDL
+  SDL_Window *window;
+  SDL_Renderer *renderer;
+#endif
+  bool isRunning;
+
+private:
+  static Game *instance;
+
+  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
 
   std::list<drakon::entity::Entity> entities;
 
@@ -99,22 +184,5 @@ struct Game {
   std::unordered_map<drakon::entity::Entity,
                      std::vector<drakon::component::ComponentId>>
       entityComponentTextures;
-
-#ifdef DRAKON_SDL
-  SDL_Window *getWindow() const;
-  SDL_Renderer *getRenderer() const;
-#endif
-
-protected:
-  std::shared_ptr<drakon::scene::Scene> activeScene;
-  std::string_view title;
-#ifdef DRAKON_SDL
-  SDL_Window *window;
-  SDL_Renderer *renderer;
-#endif
-  bool isRunning;
-
-private:
-  static Game *instance;
 };
 } // namespace drakon::game

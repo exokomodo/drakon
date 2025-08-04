@@ -3,20 +3,23 @@
 
 std::optional<drakon::error::Error> drakon::system::PrintSystem::process() {
   auto game = drakon::game::Game::getInstance();
-  for (const auto &entity : game->entities) {
-    auto it = game->entityComponentPrints.find(entity);
-    if (it != game->entityComponentPrints.end()) {
-      const auto components = it->second;
-      for (const auto &componentId : components) {
-        auto printIt = game->componentPrints.find(componentId);
-        if (printIt != game->componentPrints.end()) {
-          const auto &printComponent = printIt->second;
-          std::cout << __BASE_FILE__ << ":" << __LINE__ << " "
-                    << "Entity: " << entity
-                    << ", Print ID: " << printComponent->id
-                    << ", Message: " << printComponent->message << std::endl;
-        }
+  for (const auto &entity : game->getEntities()) {
+    auto components =
+        game->getComponents<drakon::component::PrintComponent>(entity);
+    if (!components) {
+      continue; // Skip entities without PrintComponent
+    }
+    auto printComponents = *components;
+    for (const auto &componentId : printComponents) {
+      auto component =
+          game->getComponent<drakon::component::PrintComponent>(componentId);
+      if (!component) {
+        continue; // Skip if component retrieval failed
       }
+      const auto &printComponent = *component;
+      std::cout << __BASE_FILE__ << ":" << __LINE__ << " "
+                << "Entity: " << entity << ", Print ID: " << printComponent->id
+                << ", Message: " << printComponent->message << std::endl;
     }
   }
   return std::nullopt;
