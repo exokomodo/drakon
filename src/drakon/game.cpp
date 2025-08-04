@@ -11,19 +11,19 @@ drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
   entities = std::list<drakon::entity::Entity>();
   componentPrints =
       std::unordered_map<drakon::component::ComponentId,
-                         std::unique_ptr<drakon::component::PrintComponent>>();
+                         std::shared_ptr<drakon::component::PrintComponent>>();
   entityComponentPrints =
       std::unordered_map<drakon::entity::Entity,
                          std::vector<drakon::component::ComponentId>>();
   componentPositions = std::unordered_map<
       drakon::component::ComponentId,
-      std::unique_ptr<drakon::component::PositionComponent>>();
+      std::shared_ptr<drakon::component::PositionComponent>>();
   entityComponentPositions =
       std::unordered_map<drakon::entity::Entity,
                          drakon::component::ComponentId>();
   componentTextures = std::unordered_map<
       drakon::component::ComponentId,
-      std::unique_ptr<drakon::component::TextureComponent>>();
+      std::shared_ptr<drakon::component::TextureComponent>>();
   entityComponentTextures =
       std::unordered_map<drakon::entity::Entity,
                          std::vector<drakon::component::ComponentId>>();

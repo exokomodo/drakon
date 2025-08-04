@@ -34,14 +34,14 @@ struct Game {
   std::list<drakon::entity::Entity> getEntities() const;
 
   template <typename TComponent, typename... TArgs>
-  std::expected<drakon::component::ComponentId, drakon::error::Error>
+  std::expected<std::shared_ptr<TComponent>, drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
     static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
                   "TComponent must inherit from Component");
     if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
       return std::unexpected(drakon::error::Error("Entity does not exist"));
     }
-    auto component = std::make_unique<TComponent>(std::forward<TArgs>(args)...);
+    auto component = std::make_shared<TComponent>(std::forward<TArgs>(args)...);
     const auto componentId = component->id;
     if constexpr (std::is_same_v<TComponent,
                                  drakon::component::PrintComponent>) {
@@ -50,7 +50,7 @@ struct Game {
             {entity, std::vector<drakon::component::ComponentId>()});
       }
       entityComponentPrints.at(entity).push_back(componentId);
-      componentPrints[componentId] = std::move(component);
+      componentPrints.insert({componentId, component});
     } else if constexpr (std::is_same_v<TComponent,
                                         drakon::component::PositionComponent>) {
       if (entityComponentPositions.find(entity) !=
@@ -59,7 +59,7 @@ struct Game {
             drakon::error::Error("Entity already has a PositionComponent"));
       }
       entityComponentPositions.insert({entity, componentId});
-      componentPositions[componentId] = std::move(component);
+      componentPositions.insert({componentId, component});
     } else if constexpr (std::is_same_v<TComponent,
                                         drakon::component::TextureComponent>) {
       if (entityComponentTextures.find(entity) ==
@@ -68,17 +68,17 @@ struct Game {
             {entity, std::vector<drakon::component::ComponentId>()});
       }
       entityComponentTextures.at(entity).push_back(componentId);
-      componentTextures[componentId] = std::move(component);
+      componentTextures.insert({componentId, component});
     } else {
       return std::unexpected(
           drakon::error::Error("Unsupported component type"));
     }
-    return componentId;
+    return component;
   }
 
   template <typename TComponent>
   std::optional<std::vector<drakon::component::ComponentId>>
-  getComponents(drakon::entity::Entity entity) {
+  getComponentIds(drakon::entity::Entity entity) {
     static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
                   "TComponent must inherit from Component");
     if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
@@ -115,7 +115,7 @@ struct Game {
   }
 
   template <typename TComponent>
-  std::optional<TComponent *>
+  std::optional<std::shared_ptr<TComponent>>
   getComponent(drakon::component::ComponentId componentId) {
     static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
                   "TComponent must inherit from Component");
@@ -124,19 +124,19 @@ struct Game {
       if (componentPrints.find(componentId) == componentPrints.end()) {
         return std::nullopt;
       }
-      return std::make_optional(componentPrints[componentId].get());
+      return std::make_optional(componentPrints[componentId]);
     } else if constexpr (std::is_same_v<TComponent,
                                         drakon::component::PositionComponent>) {
       if (componentPositions.find(componentId) == componentPositions.end()) {
         return std::nullopt;
       }
-      return std::make_optional(componentPositions[componentId].get());
+      return std::make_optional(componentPositions[componentId]);
     } else if constexpr (std::is_same_v<TComponent,
                                         drakon::component::TextureComponent>) {
       if (componentTextures.find(componentId) == componentTextures.end()) {
         return std::nullopt;
       }
-      return std::make_optional(componentTextures[componentId].get());
+      return std::make_optional(componentTextures[componentId]);
     } else {
       return std::nullopt; // Unsupported component type
     }
@@ -168,13 +168,13 @@ private:
   std::list<drakon::entity::Entity> entities;
 
   std::unordered_map<drakon::component::ComponentId,
-                     std::unique_ptr<drakon::component::PositionComponent>>
+                     std::shared_ptr<drakon::component::PositionComponent>>
       componentPositions;
   std::unordered_map<drakon::component::ComponentId,
-                     std::unique_ptr<drakon::component::PrintComponent>>
+                     std::shared_ptr<drakon::component::PrintComponent>>
       componentPrints;
   std::unordered_map<drakon::component::ComponentId,
-                     std::unique_ptr<drakon::component::TextureComponent>>
+                     std::shared_ptr<drakon::component::TextureComponent>>
       componentTextures;
   std::unordered_map<drakon::entity::Entity, drakon::component::ComponentId>
       entityComponentPositions;

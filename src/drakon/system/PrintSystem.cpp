@@ -5,7 +5,7 @@ std::optional<drakon::error::Error> drakon::system::PrintSystem::process() {
   auto game = drakon::game::Game::getInstance();
   for (const auto &entity : game->getEntities()) {
     auto components =
-        game->getComponents<drakon::component::PrintComponent>(entity);
+        game->getComponentIds<drakon::component::PrintComponent>(entity);
     if (!components) {
       continue; // Skip entities without PrintComponent
     }
