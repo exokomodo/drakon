@@ -5,7 +5,7 @@ std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
   const auto game = drakon::game::Game::getInstance();
   for (const auto entity : game->getEntities()) {
     auto textureComponentsOpt =
-        game->getComponents<drakon::component::TextureComponent>(entity);
+        game->getComponentIds<drakon::component::TextureComponent>(entity);
     if (!textureComponentsOpt) {
       continue; // Skip entities without TextureComponent
     }
@@ -13,7 +13,7 @@ std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
 #pragma region Get entity position
     glm::vec3 rootPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     auto positionComponentsOpt =
-        game->getComponents<drakon::component::PositionComponent>(entity);
+        game->getComponentIds<drakon::component::PositionComponent>(entity);
     if (positionComponentsOpt) {
       const auto &positionComponents = *positionComponentsOpt;
       auto positionComponentOpt =
