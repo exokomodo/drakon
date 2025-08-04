@@ -65,20 +65,42 @@ private:
       const auto speed = 10.0f;
       switch (input) {
       case drakon::input::Left: {
-        game->componentPositions[positionId]->position +=
-            glm::vec3{-speed, 0.0f, 0.0f};
+        auto componentOpt =
+            game->getComponent<drakon::component::PositionComponent>(
+                positionId);
+        if (!componentOpt) {
+          return;
+        }
+        auto component = *componentOpt;
+        component->position += glm::vec3{-speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Right: {
-        game->componentPositions[positionId]->position +=
-            glm::vec3{speed, 0.0f, 0.0f};
+        auto componentOpt =
+            game->getComponent<drakon::component::PositionComponent>(
+                positionId);
+        if (!componentOpt) {
+          return;
+        }
+        auto component = *componentOpt;
+        component->position += glm::vec3{speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Up: {
-        game->componentTextures[textureId]->position +=
-            glm::vec3{0.0f, -speed, 0.0f};
+        auto componentOpt =
+            game->getComponent<drakon::component::TextureComponent>(textureId);
+        if (!componentOpt) {
+          return;
+        }
+        auto component = *componentOpt;
+        component->position += glm::vec3{0.0f, -speed, 0.0f};
       } break;
       case drakon::input::Down: {
-        game->componentTextures[textureId]->position +=
-            glm::vec3{0.0f, speed, 0.0f};
+        auto componentOpt =
+            game->getComponent<drakon::component::TextureComponent>(textureId);
+        if (!componentOpt) {
+          return;
+        }
+        auto component = *componentOpt;
+        component->position += glm::vec3{0.0f, speed, 0.0f};
       } break;
       case drakon::input::Space: {
         if (!nextScene) {

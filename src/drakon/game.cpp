@@ -114,4 +114,7 @@ drakon::game::Game *drakon::game::Game::getInstance() { return Game::instance; }
 #ifdef DRAKON_SDL
 SDL_Window *drakon::game::Game::getWindow() const { return window; }
 SDL_Renderer *drakon::game::Game::getRenderer() const { return renderer; }
+std::list<drakon::entity::Entity> drakon::game::Game::getEntities() const {
+  return entities;
+}
 #endif
