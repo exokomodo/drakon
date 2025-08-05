@@ -14,6 +14,8 @@ struct HelloScene : public drakon::scene::Scene {
       : Scene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
 
   std::shared_ptr<drakon::scene::Scene> nextScene;
+  bool loaded = false;
+  drakon::entity::Entity entity;
   std::shared_ptr<drakon::component::PositionComponent> position;
   std::shared_ptr<drakon::component::TextureComponent> texture;
 
@@ -23,8 +25,12 @@ struct HelloScene : public drakon::scene::Scene {
     if (error) {
       return error;
     }
+    // TODO: Do something better here by registering entities with the scene
+    if (loaded) {
+      return std::nullopt;
+    }
     const auto game = drakon::game::Game::getInstance();
-    const auto entity = game->makeEntity();
+    entity = game->makeEntity();
     game->addComponent<drakon::component::PrintComponent>(
         entity, std::string_view(
                     "Hello DRAKON! Press arrow keys to change color, space to "
@@ -42,6 +48,7 @@ struct HelloScene : public drakon::scene::Scene {
       return positionRes.error();
     }
     position = *positionRes;
+    loaded = true;
     return std::nullopt;
   }
 
