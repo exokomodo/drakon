@@ -33,4 +33,4 @@ jobs:
 
     - name: Build - examples/hello
       run: |
-        make build/examples/hello
+        make build-examples-hello

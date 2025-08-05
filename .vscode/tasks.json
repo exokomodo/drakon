@@ -9,7 +9,7 @@
                 "reveal": "silent"
             },
             "args": [
-                "build/examples/hello",
+                "build-examples-hello",
             ],
             "group": {
                 "kind": "build",

@@ -25,4 +25,4 @@ jobs:
 
     - name: Check code formatting
       run: |
-        make format/check
+        make format-check

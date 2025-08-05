@@ -13,8 +13,10 @@ else ifeq ($(UNAME_S),Darwin)
 	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/gcc-13
 endif
 
+##@ Setup
+
 .PHONY: setup/ubuntu
-setup/ubuntu: ## Setup Ubuntu dependencies
+setup-ubuntu: ## Setup Ubuntu dependencies
 	sudo apt-get update
 	# https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies
 	sudo apt-get install -y \
@@ -50,7 +52,7 @@ setup/ubuntu: ## Setup Ubuntu dependencies
 		pkg-config
 
 .PHONY: setup/mac
-setup/mac: ## Setup macOS dependencies
+setup-mac: ## Setup macOS dependencies
 	if ! command -v brew &> /dev/null; then
 		echo "Homebrew is not installed. Please install Homebrew first (https://brew.sh/)"
 		exit 1
@@ -61,26 +63,30 @@ setup/mac: ## Setup macOS dependencies
 		cmake \
 		gcc@13
 
-build/drakon: build
+##@ Build
+
 .PHONY: build
-build: ## ## Build the drakon library
+build: ## Build the drakon library
 	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS)
 	cmake --build $(BUILD_DIR)
 
 build/Debug/hello: build/examples/hello
 .PHONY: build/examples/hello
-build/examples/hello: ## Build the hello example (debug)
+build-examples-hello: ## Build the hello example (debug)
 	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR)
 	cmake --build $(BUILD_DIR) --target hello
+
+.PHONY: run/examples/hello
+run-examples-hello: build/Debug/hello ## Run the example (debug)
+	$<
+
+##@ Utilities
 
 .PHONY: clean
 clean: ## Clean build artifacts
 	rm -rf $(BUILD_DIR) CMakeFiles
 
-.PHONY: run/examples/hello
-run/examples/hello: build/Debug/hello ## Run the example (debug)
-	$<
-
+.PHONY: format
 format: ## Format code
 	find . \
 		-not -path "./vendor/*" \
@@ -90,7 +96,8 @@ format: ## Format code
 		\( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) \
 		-exec clang-format -i {} \;
 
-format/check: ## Check code formatting
+.PHONY: format/check
+format-check: ## Check code formatting
 	find . \
 		-not -path "./vendor/*" \
 		-not -path "./build/*" \
@@ -105,5 +112,6 @@ env-%: ## Check for env var
 		exit 1; \
 	fi
 
+.PHONY: help
 help: ## Displays help info
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
