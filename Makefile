@@ -28,6 +28,7 @@ setup-ubuntu: ## Setup Ubuntu dependencies
 		libasound2-dev \
 		libaudio-dev \
 		libdbus-1-dev \
+		libdecor-0-dev \
 		libdrm-dev \
 		libegl1-mesa-dev \
 		libgbm-dev \
@@ -35,9 +36,12 @@ setup-ubuntu: ## Setup Ubuntu dependencies
 		libgles2-mesa-dev \
 		libibus-1.0-dev \
 		libjack-dev \
+		libpipewire-0.3-dev \
 		libpulse-dev \
 		libsndio-dev \
 		libudev-dev \
+		liburing-dev \
+		libwayland-dev \
 		libx11-dev \
 		libxcursor-dev \
 		libxext-dev \
