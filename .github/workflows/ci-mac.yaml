@@ -23,7 +23,7 @@ jobs:
     - name: Install better make
       run: |
         brew install make
-        alias make="/opt/homebrew/bin/gmake"
+        echo "/opt/homebrew/opt/make/libexec/gnubin" >> ${GITHUB_PATH}
 
     - name: Install dependencies
       run: |
