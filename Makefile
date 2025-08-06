@@ -12,6 +12,7 @@ ifeq ($(UNAME_S),Linux)
 else ifeq ($(UNAME_S),Darwin)
 	CMAKE_OS_FLAGS := 
 endif
+CMAKE_ADDITIONAL_FLAGS ?= 
 
 ##@ Setup
 
@@ -70,13 +71,13 @@ setup-mac: ## Setup macOS dependencies
 
 .PHONY: build
 build: ## Build the drakon library
-	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS)
+	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
 	cmake --build $(BUILD_DIR)
 
 build/Debug/hello: build-examples-hello
 .PHONY: build/examples/hello
 build-examples-hello: ## Build the hello example (debug)
-	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS)
+	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
 	cmake --build $(BUILD_DIR) --target hello
 
 .PHONY: run/examples/hello

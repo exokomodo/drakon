@@ -29,8 +29,8 @@ jobs:
 
     - name: Build - drakon
       run: |
-        make build
+        make build CMAKE_ADDITIONAL_FLAGS='-DSDL_UNIX_CONSOLE_BUILD=ON'
 
     - name: Build - examples/hello
       run: |
-        make build-examples-hello
+        make build-examples-hello CMAKE_ADDITIONAL_FLAGS='-DSDL_UNIX_CONSOLE_BUILD=ON'
