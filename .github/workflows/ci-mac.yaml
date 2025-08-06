@@ -27,7 +27,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        make setup/mac
+        make setup-mac
 
     - name: Check versions
       run: |

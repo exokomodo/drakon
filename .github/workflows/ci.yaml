@@ -19,7 +19,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        make setup/ubuntu
+        make setup-ubuntu
 
     - name: Check versions
       run: |
