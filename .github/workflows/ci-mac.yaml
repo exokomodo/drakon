@@ -1,4 +1,4 @@
-name: CI
+name: CI (MacOS)
 
 on:
   push:
@@ -10,27 +10,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  ci-mac:
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@main
+
+    - name: Install better make
+      run: |
+        brew install make
+        alias make="/opt/homebrew/bin/gmake"
+
     - name: Install dependencies
       run: |
-        make setup/ubuntu
+        make setup/mac
 
     - name: Check versions
       run: |
         make --version
-        gcc --version
+        clang --version
         cmake --version
 
     - name: Build - drakon
       run: |
-        make build CMAKE_ADDITIONAL_FLAGS='-DSDL_UNIX_CONSOLE_BUILD=ON'
+        make build
 
     - name: Build - examples/hello
       run: |
-        make build-examples-hello CMAKE_ADDITIONAL_FLAGS='-DSDL_UNIX_CONSOLE_BUILD=ON'
+        make build-examples-hello
+

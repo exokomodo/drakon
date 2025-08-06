@@ -4,14 +4,15 @@ SHELL := /bin/bash
 .ONESHELL:
 .SILENT:
 
-BUILD_DIR := build
+BUILD_DIR := ./build
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CMAKE_OS_FLAGS :=
 else ifeq ($(UNAME_S),Darwin)
-	CMAKE_OS_FLAGS := -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/gcc-13
+	CMAKE_OS_FLAGS := 
 endif
+CMAKE_ADDITIONAL_FLAGS ?= 
 
 ##@ Setup
 
@@ -28,6 +29,7 @@ setup-ubuntu: ## Setup Ubuntu dependencies
 		libasound2-dev \
 		libaudio-dev \
 		libdbus-1-dev \
+		libdecor-0-dev \
 		libdrm-dev \
 		libegl1-mesa-dev \
 		libgbm-dev \
@@ -35,9 +37,12 @@ setup-ubuntu: ## Setup Ubuntu dependencies
 		libgles2-mesa-dev \
 		libibus-1.0-dev \
 		libjack-dev \
+		libpipewire-0.3-dev \
 		libpulse-dev \
 		libsndio-dev \
 		libudev-dev \
+		liburing-dev \
+		libwayland-dev \
 		libx11-dev \
 		libxcursor-dev \
 		libxext-dev \
@@ -60,20 +65,19 @@ setup-mac: ## Setup macOS dependencies
 	brew update
 	brew install \
 		clang-format \
-		cmake \
-		gcc@13
+		cmake
 
 ##@ Build
 
 .PHONY: build
 build: ## Build the drakon library
-	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS)
+	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
 	cmake --build $(BUILD_DIR)
 
-build/Debug/hello: build/examples/hello
+build/Debug/hello: build-examples-hello
 .PHONY: build/examples/hello
 build-examples-hello: ## Build the hello example (debug)
-	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR)
+	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
 	cmake --build $(BUILD_DIR) --target hello
 
 .PHONY: run/examples/hello
@@ -84,7 +88,7 @@ run-examples-hello: build/Debug/hello ## Run the example (debug)
 
 .PHONY: clean
 clean: ## Clean build artifacts
-	rm -rf $(BUILD_DIR) CMakeFiles
+	rm -rf $(BUILD_DIR)
 
 .PHONY: format
 format: ## Format code
