@@ -8,7 +8,7 @@ BUILD_DIR := ./build
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	CMAKE_OS_FLAGS :=
+	CMAKE_OS_FLAGS := 
 else ifeq ($(UNAME_S),Darwin)
 	CMAKE_OS_FLAGS := 
 endif
