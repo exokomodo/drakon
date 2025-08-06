@@ -63,16 +63,15 @@ set(GLM_FORCE_CMAKE_VERSION ON CACHE BOOL "Override GLM's max CMake version poli
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
 add_subdirectory(vendor/glm SYSTEM)
-target_link_libraries(drakon PRIVATE glm::glm)
 # [GLM] END
 # [SDL3] START
-add_subdirectory(vendor/SDL3 SYSTEM)
+add_subdirectory(vendor/SDL3 EXCLUDE_FROM_ALL SYSTEM)
 
-target_link_libraries(drakon PRIVATE SDL3::SDL3)
 ## [SDL3_image] START
-add_subdirectory(vendor/SDL3_image SYSTEM)
+add_subdirectory(vendor/SDL3_image EXCLUDE_FROM_ALL SYSTEM)
 
-target_link_libraries(drakon PRIVATE SDL3_image::SDL3_image)
 ## [SDL3_image] END
 # [SDL3] END
+target_link_libraries(drakon PRIVATE glm::glm SDL3::SDL3 SDL3_image::SDL3_image)
 add_subdirectory(examples/hello EXCLUDE_FROM_ALL)
+

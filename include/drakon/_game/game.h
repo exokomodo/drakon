@@ -109,8 +109,7 @@ struct Game {
       return std::make_optional<std::vector<drakon::component::ComponentId>>(
           entityComponentTextures.at(entity));
     } else {
-      return std::unexpected(
-          drakon::error::Error("Unsupported component type"));
+			return std::nullopt;
     }
   }
 

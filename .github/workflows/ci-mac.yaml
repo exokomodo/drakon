@@ -1,0 +1,45 @@
+name: CI (MacOS)
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@main
+
+    - name: Install better make
+      run: |
+        brew install make
+        alias make="/opt/homebrew/bin/gmake"
+
+    - name: Install dependencies
+      run: |
+        make setup/mac
+
+    - name: Check versions
+      run: |
+        make --version
+        clang --version
+        cmake --version
+
+    - name: Build - drakon
+      run: |
+        make build
+
+    - name: Build - examples/hello
+      run: |
+        make build-examples-hello
+
