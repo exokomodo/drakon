@@ -3,31 +3,13 @@
 
 #define INIT_SYSTEM(type) systems.push_back(std::make_shared<type>());
 
-drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
-                         std::string_view _title, int _width, int _height)
-    : activeScene(_activeScene), title(_title), isRunning(false) {
+drakon::game::Game::Game(std::string_view _title,
+                         std::shared_ptr<drakon::scene::Scene> _activeScene,
+                         int _width, int _height)
+    : isRunning(false), title(_title), activeScene(_activeScene) {
   Game::instance = this;
   systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
-  entities = std::list<drakon::entity::Entity>();
-  componentPrints =
-      std::unordered_map<drakon::component::ComponentId,
-                         std::shared_ptr<drakon::component::PrintComponent>>();
-  entityComponentPrints =
-      std::unordered_map<drakon::entity::Entity,
-                         std::vector<drakon::component::ComponentId>>();
-  componentPositions = std::unordered_map<
-      drakon::component::ComponentId,
-      std::shared_ptr<drakon::component::PositionComponent>>();
-  entityComponentPositions =
-      std::unordered_map<drakon::entity::Entity,
-                         drakon::component::ComponentId>();
-  componentTextures = std::unordered_map<
-      drakon::component::ComponentId,
-      std::shared_ptr<drakon::component::TextureComponent>>();
-  entityComponentTextures =
-      std::unordered_map<drakon::entity::Entity,
-                         std::vector<drakon::component::ComponentId>>();
-  INIT_SYSTEM(drakon::system::PrintSystem);
+  INIT_SYSTEM(drakon::system::LogSystem);
   INIT_SYSTEM(drakon::system::TextureSystem);
   INIT_SYSTEM(drakon::system::EventSystem);
 #ifdef DRAKON_SDL
@@ -35,20 +17,6 @@ drakon::game::Game::Game(std::shared_ptr<drakon::scene::Scene> _activeScene,
   SDL_CreateWindowAndRenderer(title.data(), _width, _height, 0, &window,
                               &renderer);
 #endif
-}
-
-drakon::entity::Entity drakon::game::Game::makeEntity() {
-  auto entity = drakon::entity::Entity();
-  registerEntity(entity);
-  return entity;
-}
-
-bool drakon::game::Game::registerEntity(drakon::entity::Entity entity) {
-  if (std::find(entities.begin(), entities.end(), entity) != entities.end()) {
-    return false; // Entity already exists
-  }
-  entities.push_back(entity);
-  return true;
 }
 
 drakon::game::Game::~Game() {
@@ -65,6 +33,10 @@ drakon::game::Game::~Game() {
 #endif
 }
 
+std::shared_ptr<drakon::scene::Scene> drakon::game::Game::getActiveScene() {
+  return activeScene;
+}
+
 std::optional<drakon::error::Error> drakon::game::Game::setActiveScene(
     std::shared_ptr<drakon::scene::Scene> _activeScene) {
   if (activeScene) {
@@ -75,6 +47,8 @@ std::optional<drakon::error::Error> drakon::game::Game::setActiveScene(
 }
 
 std::optional<drakon::error::Error> drakon::game::Game::run() {
+  assert(activeScene != nullptr &&
+         "drakon::game::Game::activeScene was not specified");
   isRunning = true;
   activeScene->load();
 #ifdef DRAKON_SDL
@@ -114,7 +88,4 @@ drakon::game::Game *drakon::game::Game::getInstance() { return Game::instance; }
 #ifdef DRAKON_SDL
 SDL_Window *drakon::game::Game::getWindow() const { return window; }
 SDL_Renderer *drakon::game::Game::getRenderer() const { return renderer; }
-std::list<drakon::entity::Entity> drakon::game::Game::getEntities() const {
-  return entities;
-}
 #endif

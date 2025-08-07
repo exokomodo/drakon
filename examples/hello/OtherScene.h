@@ -15,7 +15,7 @@ struct OtherScene : public drakon::scene::Scene {
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
-    if (!eventSystem->addListener(drakon::event::KeyDown, changeColor)) {
+    if (!eventSystem->addListener(drakon::event::KeyDown, handleKeyDown)) {
       return drakon::error::Error("Failed to add key down listener");
     }
     return std::nullopt;
@@ -23,19 +23,14 @@ struct OtherScene : public drakon::scene::Scene {
 
   std::optional<drakon::error::Error> unload() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
-    if (!eventSystem->removeListener(drakon::event::KeyDown, changeColor)) {
+    if (!eventSystem->removeListener(drakon::event::KeyDown, handleKeyDown)) {
       return drakon::error::Error("Failed to remove key down listener");
     }
-    return std::nullopt;
-  }
-
-  std::optional<drakon::error::Error> process() override {
-    // Process logic for HelloScene
-    return std::nullopt;
+    return drakon::scene::Scene::unload();
   }
 
 private:
-  MAKE_LISTENER(changeColor) {
+  MAKE_LISTENER(handleKeyDown) {
     if (event.type == drakon::event::KeyDown) {
       const auto input = event.asKey()->input;
       switch (input) {

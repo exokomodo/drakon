@@ -7,11 +7,12 @@
 #include <drakon/error>
 
 namespace drakon::component {
-struct PrintComponent : public Component {
-  PrintComponent(std::string_view _message) : message(_message) {}
-
-  std::optional<drakon::error::Error> process();
+struct LogComponent : public Component {
+  LogComponent(std::string_view _message);
+  LogComponent(std::string_view _message, bool _isOneShot);
 
   std::string_view message;
+  const bool isOneShot = false;
+  bool hasPrinted = false;
 };
 } // namespace drakon::component
