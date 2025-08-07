@@ -8,7 +8,7 @@ BUILD_DIR := ./build
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	CMAKE_OS_FLAGS :=
+	CMAKE_OS_FLAGS := 
 else ifeq ($(UNAME_S),Darwin)
 	CMAKE_OS_FLAGS := 
 endif
@@ -16,7 +16,7 @@ CMAKE_ADDITIONAL_FLAGS ?=
 
 ##@ Setup
 
-.PHONY: setup/ubuntu
+.PHONY: setup-ubuntu
 setup-ubuntu: ## Setup Ubuntu dependencies
 	sudo apt-get update
 	# https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies
@@ -56,7 +56,7 @@ setup-ubuntu: ## Setup Ubuntu dependencies
 		ninja-build \
 		pkg-config
 
-.PHONY: setup/mac
+.PHONY: setup-mac
 setup-mac: ## Setup macOS dependencies
 	if ! command -v brew &> /dev/null; then
 		echo "Homebrew is not installed. Please install Homebrew first (https://brew.sh/)"
@@ -72,15 +72,15 @@ setup-mac: ## Setup macOS dependencies
 .PHONY: build
 build: ## Build the drakon library
 	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
-	cmake --build $(BUILD_DIR)
+	cmake --build $(BUILD_DIR) -j
 
 build/Debug/hello: build-examples-hello
-.PHONY: build/examples/hello
+.PHONY: build-examples-hello
 build-examples-hello: ## Build the hello example (debug)
 	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
-	cmake --build $(BUILD_DIR) --target hello
+	cmake --build $(BUILD_DIR) --target hello -j
 
-.PHONY: run/examples/hello
+.PHONY: run-examples-hello
 run-examples-hello: build/Debug/hello ## Run the example (debug)
 	$<
 

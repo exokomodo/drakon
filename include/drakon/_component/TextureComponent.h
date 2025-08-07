@@ -3,7 +3,7 @@
 // #ifdef DRAKON_SDL
 #include <SDL3_image/SDL_image.h>
 // #endif
-#include <drakon/_component/PrintComponent.h>
+#include <drakon/_component/LogComponent.h>
 #include <drakon/_component/component.h>
 #include <glm/vec3.hpp>
 
