@@ -72,13 +72,13 @@ setup-mac: ## Setup macOS dependencies
 .PHONY: build
 build: ## Build the drakon library
 	cmake -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
-	cmake --build $(BUILD_DIR) -j 4
+	cmake --build $(BUILD_DIR) -j
 
 build/Debug/hello: build-examples-hello
 .PHONY: build-examples-hello
 build-examples-hello: ## Build the hello example (debug)
 	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B $(BUILD_DIR) $(CMAKE_OS_FLAGS) $(CMAKE_ADDITIONAL_FLAGS)
-	cmake --build $(BUILD_DIR) --target hello -j 4
+	cmake --build $(BUILD_DIR) --target hello -j
 
 .PHONY: run-examples-hello
 run-examples-hello: build/Debug/hello ## Run the example (debug)
