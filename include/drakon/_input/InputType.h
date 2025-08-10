@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace drakon::input {
-typedef Uint32 InputType;
+typedef uint32_t InputType;
 } // namespace drakon::input

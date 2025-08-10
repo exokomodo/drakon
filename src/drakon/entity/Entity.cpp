@@ -1,4 +1,4 @@
-#include <drakon/_entity/entity.h>
+#include <drakon/_entity/Entity.h>
 
 #include <atomic>
 

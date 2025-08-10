@@ -1,6 +1,9 @@
 #pragma once
+#ifdef DRAKON_SDL
 
-#include <drakon/_input/input.h>
+#include <SDL3/SDL.h>
+
+#include <drakon/_input/InputType.h>
 
 namespace drakon::input {
 static const InputType None = 0x00000000;
@@ -263,3 +266,5 @@ static const InputType X = SDLK_X;
 static const InputType Y = SDLK_Y;
 static const InputType Z = SDLK_Z;
 } // namespace drakon::input
+
+#endif

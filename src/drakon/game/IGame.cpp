@@ -4,8 +4,8 @@
 #define INIT_SYSTEM(type) systems.push_back(std::make_shared<type>());
 
 drakon::game::IGame::IGame(std::string_view _title,
-                         std::shared_ptr<drakon::scene::IScene> _activeScene,
-                         int _width, int _height)
+                           std::shared_ptr<drakon::scene::IScene> _activeScene,
+                           int _width, int _height)
     : isRunning(false), title(_title), activeScene(_activeScene) {
   IGame::instance = this;
   systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
@@ -84,7 +84,9 @@ std::optional<drakon::error::Error> drakon::game::IGame::run() {
 }
 
 drakon::game::IGame *drakon::game::IGame::instance = nullptr;
-drakon::game::IGame *drakon::game::IGame::getInstance() { return IGame::instance; }
+drakon::game::IGame *drakon::game::IGame::getInstance() {
+  return IGame::instance;
+}
 #ifdef DRAKON_SDL
 SDL_Window *drakon::game::IGame::getWindow() const { return window; }
 SDL_Renderer *drakon::game::IGame::getRenderer() const { return renderer; }

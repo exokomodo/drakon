@@ -21,8 +21,8 @@ struct IGame {
   IGame(IGame &&) = default;
   IGame &operator=(IGame &&) = default;
   IGame(std::string_view _title,
-       std::shared_ptr<drakon::scene::IScene> _activeScene, int _width,
-       int _height);
+        std::shared_ptr<drakon::scene::IScene> _activeScene, int _width,
+        int _height);
   ~IGame();
 
   static IGame *getInstance();

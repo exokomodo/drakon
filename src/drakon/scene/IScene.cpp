@@ -43,3 +43,14 @@ bool drakon::scene::IScene::registerEntity(drakon::entity::Entity entity) {
 std::vector<drakon::entity::Entity> drakon::scene::IScene::getEntities() const {
   return entities;
 }
+
+std::optional<drakon::error::Error> drakon::scene::IScene::unload() {
+  componentPositions.clear();
+  componentLogs.clear();
+  componentTextures.clear();
+  entityComponentPositions.clear();
+  entityComponentLogs.clear();
+  entityComponentTextures.clear();
+  entities.clear();
+  return std::nullopt;
+}

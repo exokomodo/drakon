@@ -33,16 +33,7 @@ struct IScene {
   Uint8 alpha;
 
   virtual std::optional<drakon::error::Error> load() = 0;
-  virtual std::optional<drakon::error::Error> unload() {
-    componentPositions.clear();
-    componentLogs.clear();
-    componentTextures.clear();
-    entityComponentPositions.clear();
-    entityComponentLogs.clear();
-    entityComponentTextures.clear();
-    entities.clear();
-    return std::nullopt;
-  }
+  virtual std::optional<drakon::error::Error> unload();
 
   drakon::entity::Entity makeEntity();
   bool registerEntity(drakon::entity::Entity entity);
