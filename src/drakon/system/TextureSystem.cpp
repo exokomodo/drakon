@@ -2,7 +2,7 @@
 #include <drakon/game>
 
 std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
-  const auto game = drakon::game::Game::getInstance();
+  const auto game = drakon::game::IGame::getInstance();
   const auto scene = game->getActiveScene();
   for (const auto entity : scene->getEntities()) {
     auto textureComponentsOpt =

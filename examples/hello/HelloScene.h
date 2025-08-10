@@ -8,12 +8,12 @@
 #include <drakon/scene>
 #include <optional>
 
-struct HelloScene : public drakon::scene::Scene {
+struct HelloScene : public drakon::scene::IScene {
   HelloScene() : HelloScene(nullptr) {}
-  HelloScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
-      : Scene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
+  HelloScene(std::shared_ptr<drakon::scene::IScene> _nextScene)
+      : IScene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<drakon::scene::Scene> nextScene;
+  std::shared_ptr<drakon::scene::IScene> nextScene;
   drakon::entity::Entity entity;
   std::shared_ptr<drakon::component::PositionComponent> position;
   std::shared_ptr<drakon::component::TextureComponent> texture;
@@ -25,7 +25,7 @@ struct HelloScene : public drakon::scene::Scene {
     if (error) {
       return error;
     }
-    const auto game = drakon::game::Game::getInstance();
+    const auto game = drakon::game::IGame::getInstance();
     const auto scene = game->getActiveScene();
     entity = scene->makeEntity();
     scene->addComponent<drakon::component::LogComponent>(
@@ -58,7 +58,7 @@ struct HelloScene : public drakon::scene::Scene {
     }
     // NOTE: If you do not want to clear all components and entities on unload,
     // you can leave this out.
-    return drakon::scene::Scene::unload();
+    return drakon::scene::IScene::unload();
   }
 
 private:
@@ -83,7 +83,7 @@ private:
         if (!nextScene) {
           break;
         }
-        const auto game = drakon::game::Game::getInstance();
+        const auto game = drakon::game::IGame::getInstance();
         game->setActiveScene(nextScene);
       } break;
       };

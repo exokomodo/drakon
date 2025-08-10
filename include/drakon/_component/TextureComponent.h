@@ -4,11 +4,11 @@
 #include <SDL3_image/SDL_image.h>
 // #endif
 #include <drakon/_component/LogComponent.h>
-#include <drakon/_component/component.h>
+#include <drakon/_component/IComponent.h>
 #include <glm/vec3.hpp>
 
 namespace drakon::component {
-struct TextureComponent : public Component {
+struct TextureComponent : public IComponent {
   glm::vec3 position;
   TextureComponent(glm::vec3 _position, unsigned char *bmp_data,
                    size_t bmp_len);

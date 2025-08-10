@@ -6,12 +6,12 @@
 
 struct HelloScene;
 
-struct OtherScene : public drakon::scene::Scene {
+struct OtherScene : public drakon::scene::IScene {
   OtherScene() : OtherScene(nullptr) {}
-  OtherScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
-      : Scene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
+  OtherScene(std::shared_ptr<drakon::scene::IScene> _nextScene)
+      : IScene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<drakon::scene::Scene> nextScene;
+  std::shared_ptr<drakon::scene::IScene> nextScene;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -26,7 +26,7 @@ struct OtherScene : public drakon::scene::Scene {
     if (!eventSystem->removeListener(drakon::event::KeyDown, handleKeyDown)) {
       return drakon::error::Error("Failed to remove key down listener");
     }
-    return drakon::scene::Scene::unload();
+    return drakon::scene::IScene::unload();
   }
 
 private:
@@ -50,7 +50,7 @@ private:
         if (!nextScene) {
           break;
         }
-        auto game = drakon::game::Game::getInstance();
+        auto game = drakon::game::IGame::getInstance();
         game->setActiveScene(nextScene);
       } break;
       };

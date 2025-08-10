@@ -10,19 +10,19 @@ typedef unsigned long ComponentId;
 
 ComponentId getNextComponentId();
 
-struct Component {
+struct IComponent {
   ComponentId id;
 
-  Component() : id(getNextComponentId()) {}
+  IComponent() : id(getNextComponentId()) {}
 
   // Movable: default move constructor and move assignment
-  Component(Component &&) = default;
-  Component &operator=(Component &&) = default;
+  IComponent(IComponent &&) = default;
+  IComponent &operator=(IComponent &&) = default;
 
   // Prevent copying
-  Component(const Component &) = default;
-  Component &operator=(const Component &) = default;
+  IComponent(const IComponent &) = default;
+  IComponent &operator=(const IComponent &) = default;
 
-  virtual ~Component() = default;
+  virtual ~IComponent() = default;
 };
 } // namespace drakon::component

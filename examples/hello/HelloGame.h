@@ -10,11 +10,11 @@ struct CustomEventData : drakon::event::CustomEventData {
   CustomEventData(std::string_view _message) : message(_message) {}
 };
 
-struct HelloGame : public drakon::game::Game {
+struct HelloGame : public drakon::game::IGame {
   HelloGame(std::string_view _title,
-            std::shared_ptr<drakon::scene::Scene> _activeScene, int _width,
+            std::shared_ptr<drakon::scene::IScene> _activeScene, int _width,
             int _height)
-      : drakon::game::Game(_title, _activeScene, _width, _height) {
+      : drakon::game::IGame(_title, _activeScene, _width, _height) {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
     eventSystem->addListener(drakon::event::Quit, quit);
     eventSystem->addListener(drakon::event::KeyDown, handleKey);

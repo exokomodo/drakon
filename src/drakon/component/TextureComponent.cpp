@@ -8,7 +8,7 @@ drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
                                                       unsigned char *bmp_data,
                                                       size_t bmp_len)
     : position(_position) {
-  auto game = drakon::game::Game::getInstance();
+  auto game = drakon::game::IGame::getInstance();
   image_data = bmp_data;
   image_len = bmp_len;
 

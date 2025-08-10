@@ -2,7 +2,7 @@
 #include <drakon/game>
 
 std::optional<drakon::error::Error> drakon::system::LogSystem::process() {
-  auto game = drakon::game::Game::getInstance();
+  auto game = drakon::game::IGame::getInstance();
   auto scene = game->getActiveScene();
   for (const auto &entity : scene->getEntities()) {
     auto components =

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <drakon/_component/component.h>
+#include <drakon/_component/IComponent.h>
 #include <glm/vec3.hpp>
 
 namespace drakon::component {
-struct PositionComponent : public Component {
+struct PositionComponent : public IComponent {
   PositionComponent(glm::vec3 _position) : position(_position) {}
 
   glm::vec3 position;
