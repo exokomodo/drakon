@@ -16,6 +16,7 @@ struct TextureComponent : public IComponent {
                    const size_t bmp_len);
 #ifdef DRAKON_SDL
   TextureComponent(const glm::vec3 _position, SDL_Texture *_texture);
+  ~TextureComponent();
 
   SDL_Texture *getTexture() const;
 #endif

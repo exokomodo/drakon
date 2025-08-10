@@ -14,5 +14,7 @@ int main() {
     std::cerr << *error << std::endl;
     return 1;
   }
+  otherScene = nullptr;
+  helloScene = nullptr;
   return 0;
 }

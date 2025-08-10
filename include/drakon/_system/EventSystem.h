@@ -23,7 +23,7 @@ struct EventSystem : public ISystem {
   EventSystem(EventSystem &&) = default;
   EventSystem &operator=(const EventSystem &) = default;
   EventSystem &operator=(EventSystem &&) = default;
-  ~EventSystem() = default;
+  ~EventSystem();
 
   typedef std::function<void(drakon::event::Event)> Listener;
 

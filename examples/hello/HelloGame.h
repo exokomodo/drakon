@@ -21,6 +21,14 @@ struct HelloGame : public drakon::game::IGame {
     eventSystem->addListener(customQuitType, customQuit);
   }
 
+  ~HelloGame() {
+    std::cout << "[HelloGame] cleaning up" << std::endl;
+    const auto eventSystem = drakon::system::EventSystem::getInstance();
+    eventSystem->removeListener(drakon::event::Quit, quit);
+    eventSystem->removeListener(drakon::event::KeyDown, handleKey);
+    eventSystem->removeListener(customQuitType, customQuit);
+  }
+
 private:
   MAKE_LISTENER(handleKey) {
     if (event.type == drakon::event::KeyDown) {

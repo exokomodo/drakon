@@ -20,6 +20,10 @@ drakon::game::IGame::IGame(std::string_view _title,
 }
 
 drakon::game::IGame::~IGame() {
+  std::cout << "[IGame] cleaning up" << std::endl;
+  activeScene = nullptr;
+  IGame::instance = nullptr;
+  systems.clear();
 #ifdef DRAKON_SDL
   if (window) {
     SDL_DestroyWindow(window);
@@ -29,6 +33,7 @@ drakon::game::IGame::~IGame() {
   }
   renderer = nullptr;
   window = nullptr;
+  SDL_QuitSubSystem(SDL_INIT_VIDEO);
   SDL_Quit();
 #endif
 }

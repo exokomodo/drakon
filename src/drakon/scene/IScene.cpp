@@ -24,7 +24,16 @@ drakon::scene::IScene::IScene(const Uint8 _red, const Uint8 _green,
                          std::vector<drakon::component::ComponentId>>();
 }
 
-drakon::scene::IScene::~IScene() {}
+drakon::scene::IScene::~IScene() {
+  std::cout << "[IScene] cleaning up" << std::endl;
+  entityComponentTextures.clear();
+  entityComponentPositions.clear();
+  entityComponentLogs.clear();
+  componentTextures.clear();
+  componentPositions.clear();
+  componentLogs.clear();
+  entities.clear();
+}
 
 drakon::entity::Entity drakon::scene::IScene::makeEntity() {
   auto entity = drakon::entity::Entity();

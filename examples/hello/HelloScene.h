@@ -26,29 +26,35 @@ struct HelloScene : public drakon::scene::IScene {
       return error;
     }
     const auto game = drakon::game::IGame::getInstance();
-    const auto &scene = game->getActiveScene();
-    entity = scene->makeEntity();
-    scene->addComponent<drakon::component::LogComponent>(
+    entity = makeEntity();
+    addComponent<drakon::component::LogComponent>(
         entity,
         std::string_view(
             "Hello DRAKON! Press arrow keys to change color, space to "
             "switch scene."),
         true);
-    auto textureRes = scene->addComponent<drakon::component::TextureComponent>(
+    auto textureRes = addComponent<drakon::component::TextureComponent>(
         entity, glm::vec3{0.0f, 0.0f, 0.0f}, smile_icon_bmp,
         smile_icon_bmp_len);
     if (!textureRes) {
       return textureRes.error();
     }
     texture = *textureRes;
-    auto positionRes =
-        scene->addComponent<drakon::component::PositionComponent>(
-            entity, glm::vec3{0.0f, 0.0f, 0.0f});
+    auto positionRes = addComponent<drakon::component::PositionComponent>(
+        entity, glm::vec3{0.0f, 0.0f, 0.0f});
     if (!positionRes) {
       return positionRes.error();
     }
     position = *positionRes;
     return std::nullopt;
+  }
+
+  ~HelloScene() {
+    std::cout << "[HelloScene] cleaning up" << std::endl;
+    nextScene = nullptr;
+    position = nullptr;
+    texture = nullptr;
+    unload();
   }
 
   std::optional<drakon::error::Error> unload() override {

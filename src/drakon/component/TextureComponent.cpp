@@ -21,6 +21,19 @@ drakon::component::TextureComponent::TextureComponent(const glm::vec3 _position,
   }
 }
 
+drakon::component::TextureComponent::~TextureComponent() {
+  std::cout << "[TextureComponent] cleaning up" << std::endl;
+#ifdef DRAKON_SDL
+  if (texture) {
+    std::cout << "Destroying texture" << std::endl;
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+  }
+#endif
+  image_data = nullptr;
+  image_len = 0;
+}
+
 SDL_Texture *drakon::component::TextureComponent::getTexture() const {
   return texture;
 }

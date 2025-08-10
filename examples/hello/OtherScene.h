@@ -11,6 +11,12 @@ struct OtherScene : public drakon::scene::IScene {
   OtherScene(std::shared_ptr<drakon::scene::IScene> _nextScene)
       : IScene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
 
+  ~OtherScene() {
+    std::cout << "[OtherScene] cleaning up" << std::endl;
+    nextScene = nullptr;
+    unload();
+  }
+
   std::shared_ptr<drakon::scene::IScene> nextScene;
 
   std::optional<drakon::error::Error> load() override {
