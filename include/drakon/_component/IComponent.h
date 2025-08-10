@@ -1,9 +1,5 @@
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <vector>
-
 namespace drakon::component {
 
 typedef unsigned long ComponentId;
@@ -11,9 +7,9 @@ typedef unsigned long ComponentId;
 ComponentId getNextComponentId();
 
 struct IComponent {
-  ComponentId id;
+  const ComponentId id;
 
-  IComponent() : id(getNextComponentId()) {}
+  IComponent();
 
   // Movable: default move constructor and move assignment
   IComponent(IComponent &&) = default;

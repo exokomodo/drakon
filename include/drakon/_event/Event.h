@@ -4,6 +4,13 @@
 #include <SDL3/SDL.h>
 #endif
 
+#include <drakon/_event/ApplicationEventData.h>
+#include <drakon/_event/EventType.h>
+#include <drakon/_event/IEventData.h>
+#include <drakon/_event/KeyEventData.h>
+#include <drakon/_event/MouseEventData.h>
+#include <drakon/_event/WindowEventData.h>
+
 #include <any>
 #include <drakon/error>
 #include <drakon/input>
@@ -13,44 +20,9 @@
 #include <string_view>
 
 namespace drakon::event {
-// NOTE: When making an event, generate a GUID and take the front bits
-typedef Uint32 EventType;
-static const EventType None = 0x00000000;
-
-struct EventData {};
-
-struct KeyEventData : EventData {
-  drakon::input::InputType input;
-
-  KeyEventData(drakon::input::InputType _input) : input(_input) {}
-};
-
-struct MouseEventData : EventData {
-  drakon::input::InputType input;
-
-  MouseEventData(drakon::input::InputType _input) : input(_input) {}
-};
-
-struct WindowEventData : EventData {
-#ifdef DRAKON_SDL
-  SDL_Event sdl;
-  WindowEventData(SDL_Event _sdl) : sdl(_sdl) {}
-#endif
-};
-
-struct ApplicationEventData : EventData {
-#ifdef DRAKON_SDL
-  SDL_Event sdl;
-
-  ApplicationEventData(SDL_Event _sdl) : sdl(_sdl) {}
-#endif
-};
-
-struct CustomEventData : EventData {};
-
 struct Event {
   const EventType type;
-  const std::shared_ptr<EventData> data;
+  const std::shared_ptr<IEventData> data;
 #ifdef DRAKON_SDL
   static Event fromSDL(const SDL_Event &event);
 #endif
@@ -81,7 +53,7 @@ struct Event {
     static_assert(std::is_base_of_v<EventData, std::decay_t<T>>,
                   "T must inherit from EventData");
   }
-  Event(const EventType _type, std::shared_ptr<EventData> _data)
+  Event(const EventType _type, std::shared_ptr<IEventData> _data)
       : type(_type), data(_data) {}
   Event(const EventType _type) : type(_type) {}
   Event(const Event &other) : type(other.type), data(other.data) {}

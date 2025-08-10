@@ -5,7 +5,7 @@
 
 namespace drakon::component {
 struct PositionComponent : public IComponent {
-  PositionComponent(glm::vec3 _position) : position(_position) {}
+  PositionComponent(const glm::vec3 _position);
 
   glm::vec3 position;
 };

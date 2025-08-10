@@ -33,7 +33,7 @@ drakon::game::IGame::~IGame() {
 #endif
 }
 
-std::shared_ptr<drakon::scene::IScene> drakon::game::IGame::getActiveScene() {
+std::shared_ptr<drakon::scene::IScene> &drakon::game::IGame::getActiveScene() {
   return activeScene;
 }
 

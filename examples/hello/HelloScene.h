@@ -26,7 +26,7 @@ struct HelloScene : public drakon::scene::IScene {
       return error;
     }
     const auto game = drakon::game::IGame::getInstance();
-    const auto scene = game->getActiveScene();
+    const auto &scene = game->getActiveScene();
     entity = scene->makeEntity();
     scene->addComponent<drakon::component::LogComponent>(
         entity,

@@ -3,6 +3,7 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
+#include <drakon/component>
 #include <drakon/entity>
 #include <drakon/error>
 #include <drakon/system>
@@ -17,7 +18,7 @@ struct IScene {
 
   IScene();
   IScene(const Uint8 red, const Uint8 green, const Uint8 blue,
-        const Uint8 alpha);
+         const Uint8 alpha);
 
   IScene(const IScene &) = default;
   IScene(IScene &&) = default;

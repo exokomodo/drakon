@@ -29,7 +29,7 @@ struct IGame {
 
   std::optional<drakon::error::Error> run();
 
-  std::shared_ptr<drakon::scene::IScene> getActiveScene();
+  std::shared_ptr<drakon::scene::IScene> &getActiveScene();
   std::optional<drakon::error::Error>
   setActiveScene(std::shared_ptr<drakon::scene::IScene> _activeScene);
 
