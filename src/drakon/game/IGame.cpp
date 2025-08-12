@@ -63,10 +63,11 @@ std::optional<drakon::error::Error> drakon::game::IGame::run() {
   SDL_Event sdlEvent;
   while (isRunning) {
     while (SDL_PollEvent(&sdlEvent)) {
-      auto event = drakon::event::Event::fromSDL(sdlEvent);
+      const auto eventOpt = drakon::event::Event::fromSDL(sdlEvent);
 #endif
-      if (!event.isNone()) {
-        auto error = drakon::system::EventSystem::getInstance()->enqueue(event);
+      if (eventOpt) {
+        auto error =
+            drakon::system::EventSystem::getInstance()->enqueue(*eventOpt);
         if (error) {
           return error;
         }
