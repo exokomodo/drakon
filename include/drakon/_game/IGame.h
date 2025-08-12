@@ -9,7 +9,6 @@
 #include <drakon/scene>
 #include <drakon/system>
 #include <expected>
-#include <memory>
 #include <optional>
 #include <string_view>
 #include <vector>

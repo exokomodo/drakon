@@ -7,7 +7,6 @@
 #include <drakon/entity>
 #include <drakon/error>
 #include <drakon/system>
-#include <memory>
 #include <optional>
 #include <unordered_map>
 #include <vector>

@@ -15,7 +15,6 @@
 #include <drakon/error>
 #include <drakon/input>
 #include <expected>
-#include <memory>
 #include <optional>
 #include <string_view>
 
