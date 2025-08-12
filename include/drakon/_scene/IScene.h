@@ -41,7 +41,7 @@ struct IScene {
   std::vector<drakon::entity::Entity> getEntities() const;
 
   template <typename TComponent, typename... TArgs>
-  std::expected<std::shared_ptr<TComponent>, drakon::error::Error>
+  std::expected<std::weak_ptr<TComponent>, drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
     static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
                   "TComponent must inherit from IComponent");
@@ -119,7 +119,7 @@ struct IScene {
   }
 
   template <typename TComponent>
-  std::optional<std::shared_ptr<TComponent>>
+  std::optional<std::weak_ptr<TComponent>>
   getComponent(drakon::component::ComponentId componentId) {
     static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
                   "TComponent must inherit from IComponent");

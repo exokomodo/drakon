@@ -32,7 +32,7 @@ struct HelloGame : public drakon::game::IGame {
 private:
   MAKE_LISTENER(handleKey) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey()->input;
+      const auto input = event.asKey().lock()->input;
       if (input == drakon::input::Escape) {
         const auto eventSystem = drakon::system::EventSystem::getInstance();
         eventSystem->enqueue(

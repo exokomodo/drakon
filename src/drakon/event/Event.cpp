@@ -19,19 +19,19 @@ drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {
 }
 #endif
 
-const std::shared_ptr<drakon::event::KeyEventData>
+const std::weak_ptr<drakon::event::KeyEventData>
 drakon::event::Event::asKey() const {
   return static_pointer_cast<drakon::event::KeyEventData>(data);
 }
-const std::shared_ptr<drakon::event::MouseEventData>
+const std::weak_ptr<drakon::event::MouseEventData>
 drakon::event::Event::asMouse() const {
   return static_pointer_cast<drakon::event::MouseEventData>(data);
 }
-const std::shared_ptr<drakon::event::WindowEventData>
+const std::weak_ptr<drakon::event::WindowEventData>
 drakon::event::Event::asWindow() const {
   return static_pointer_cast<drakon::event::WindowEventData>(data);
 }
-const std::shared_ptr<drakon::event::ApplicationEventData>
+const std::weak_ptr<drakon::event::ApplicationEventData>
 drakon::event::Event::asApplication() const {
   return static_pointer_cast<drakon::event::ApplicationEventData>(data);
 }

@@ -33,10 +33,10 @@ struct Event {
   bool isApplication() const;
   bool isCustom() const;
 
-  const std::shared_ptr<KeyEventData> asKey() const;
-  const std::shared_ptr<MouseEventData> asMouse() const;
-  const std::shared_ptr<WindowEventData> asWindow() const;
-  const std::shared_ptr<ApplicationEventData> asApplication() const;
+  const std::weak_ptr<KeyEventData> asKey() const;
+  const std::weak_ptr<MouseEventData> asMouse() const;
+  const std::weak_ptr<WindowEventData> asWindow() const;
+  const std::weak_ptr<ApplicationEventData> asApplication() const;
 
   template <typename T> auto asCustom() {
     static_assert(std::is_base_of_v<CustomEventData, T>,
