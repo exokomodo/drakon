@@ -7,16 +7,16 @@
 struct HelloScene;
 
 struct OtherScene : public drakon::scene::IScene {
-  OtherScene(std::weak_ptr<drakon::scene::IScene> _nextScene)
+  OtherScene() : OtherScene(nullptr) {}
+  OtherScene(drakon::scene::IScene *_nextScene)
       : IScene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
 
   ~OtherScene() {
     std::cout << "[OtherScene] cleaning up" << std::endl;
-    nextScene.reset();
-    unload();
+    nextScene = nullptr;
   }
 
-  std::weak_ptr<drakon::scene::IScene> nextScene;
+  drakon::scene::IScene *nextScene;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -37,7 +37,7 @@ struct OtherScene : public drakon::scene::IScene {
 private:
   MAKE_LISTENER(handleKeyDown) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey().lock()->input;
+      const auto input = event.asKey()->input;
       switch (input) {
       case drakon::input::Left: {
         blue = std::max(0x00, blue - 10);
@@ -52,12 +52,11 @@ private:
         red = std::min(red + 10, 0xFF);
       } break;
       case drakon::input::Space: {
-        const auto _nextScene = nextScene.lock();
-        if (!_nextScene) {
+        if (!nextScene) {
           break;
         }
         auto game = drakon::game::IGame::getInstance();
-        game->setActiveScene(_nextScene);
+        game->setActiveScene(nextScene);
       } break;
       };
     }

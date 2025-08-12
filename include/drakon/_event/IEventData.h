@@ -1,5 +1,7 @@
 #pragma once
 
 namespace drakon::event {
-struct IEventData {};
+struct IEventData {
+  virtual ~IEventData() = default;
+};
 } // namespace drakon::event

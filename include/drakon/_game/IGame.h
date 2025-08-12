@@ -20,18 +20,17 @@ struct IGame {
   IGame &operator=(const IGame &) = default;
   IGame(IGame &&) = default;
   IGame &operator=(IGame &&) = default;
-  IGame(std::string_view _title,
-        std::shared_ptr<drakon::scene::IScene> _activeScene, int _width,
-        int _height);
+  IGame(std::string_view _title, drakon::scene::IScene *_activeScene,
+        int _width, int _height);
   ~IGame();
 
   static IGame *getInstance();
 
   std::optional<drakon::error::Error> run();
 
-  std::shared_ptr<drakon::scene::IScene> &getActiveScene();
+  drakon::scene::IScene *getActiveScene();
   std::optional<drakon::error::Error>
-  setActiveScene(std::shared_ptr<drakon::scene::IScene> _activeScene);
+  setActiveScene(drakon::scene::IScene *_activeScene);
 
 #ifdef DRAKON_SDL
   SDL_Window *getWindow() const;
@@ -44,8 +43,8 @@ protected:
 private:
   static IGame *instance;
   std::string_view title;
-  std::shared_ptr<drakon::scene::IScene> activeScene;
-  std::vector<std::shared_ptr<drakon::system::ISystem>> systems;
+  drakon::scene::IScene *activeScene;
+  std::vector<drakon::system::ISystem *> systems;
 #ifdef DRAKON_SDL
   SDL_Window *window;
   SDL_Renderer *renderer;

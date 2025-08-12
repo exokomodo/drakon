@@ -11,9 +11,8 @@ struct CustomEventData : drakon::event::CustomEventData {
 };
 
 struct HelloGame : public drakon::game::IGame {
-  HelloGame(std::string_view _title,
-            std::shared_ptr<drakon::scene::IScene> _activeScene, int _width,
-            int _height)
+  HelloGame(std::string_view _title, drakon::scene::IScene *_activeScene,
+            int _width, int _height)
       : drakon::game::IGame(_title, _activeScene, _width, _height) {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
     eventSystem->addListener(drakon::event::Quit, quit);
@@ -32,7 +31,7 @@ struct HelloGame : public drakon::game::IGame {
 private:
   MAKE_LISTENER(handleKey) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey().lock()->input;
+      const auto input = event.asKey()->input;
       if (input == drakon::input::Escape) {
         const auto eventSystem = drakon::system::EventSystem::getInstance();
         eventSystem->enqueue(

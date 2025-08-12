@@ -1,14 +1,14 @@
 #include <drakon/event>
 #include <drakon/game>
 
-#define INIT_SYSTEM(type) systems.push_back(std::make_shared<type>());
+#define INIT_SYSTEM(systemType) systems.push_back(new systemType());
 
 drakon::game::IGame::IGame(std::string_view _title,
-                           std::shared_ptr<drakon::scene::IScene> _activeScene,
-                           int _width, int _height)
+                           drakon::scene::IScene *_activeScene, int _width,
+                           int _height)
     : isRunning(false), title(_title), activeScene(_activeScene) {
   IGame::instance = this;
-  systems = std::vector<std::shared_ptr<drakon::system::ISystem>>();
+  systems = std::vector<drakon::system::ISystem *>();
   INIT_SYSTEM(drakon::system::LogSystem);
   INIT_SYSTEM(drakon::system::TextureSystem);
   INIT_SYSTEM(drakon::system::EventSystem);
@@ -23,6 +23,9 @@ drakon::game::IGame::~IGame() {
   std::cout << "[IGame] cleaning up" << std::endl;
   activeScene = nullptr;
   IGame::instance = nullptr;
+  for (auto &system : systems) {
+    delete system;
+  }
   systems.clear();
 #ifdef DRAKON_SDL
   if (window) {
@@ -38,12 +41,12 @@ drakon::game::IGame::~IGame() {
 #endif
 }
 
-std::shared_ptr<drakon::scene::IScene> &drakon::game::IGame::getActiveScene() {
+drakon::scene::IScene *drakon::game::IGame::getActiveScene() {
   return activeScene;
 }
 
-std::optional<drakon::error::Error> drakon::game::IGame::setActiveScene(
-    std::shared_ptr<drakon::scene::IScene> _activeScene) {
+std::optional<drakon::error::Error>
+drakon::game::IGame::setActiveScene(drakon::scene::IScene *_activeScene) {
   if (activeScene) {
     activeScene->unload();
   }

@@ -17,7 +17,7 @@ std::optional<drakon::error::Error> drakon::system::LogSystem::process() {
       if (!component) {
         continue; // Skip if component retrieval failed
       }
-      const auto logComponent = (*component).lock();
+      const auto logComponent = *component;
       if (logComponent->isOneShot && logComponent->hasPrinted) {
         continue; // Skip if it's a one-shot component that has already printed
       }

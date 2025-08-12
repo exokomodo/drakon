@@ -22,7 +22,7 @@
 namespace drakon::event {
 struct Event {
   const EventType type;
-  const std::shared_ptr<IEventData> data;
+  const IEventData *data;
 #ifdef DRAKON_SDL
   static Event fromSDL(const SDL_Event &event);
 #endif
@@ -33,27 +33,25 @@ struct Event {
   bool isApplication() const;
   bool isCustom() const;
 
-  const std::weak_ptr<KeyEventData> asKey() const;
-  const std::weak_ptr<MouseEventData> asMouse() const;
-  const std::weak_ptr<WindowEventData> asWindow() const;
-  const std::weak_ptr<ApplicationEventData> asApplication() const;
+  const KeyEventData *asKey() const;
+  const MouseEventData *asMouse() const;
+  const WindowEventData *asWindow() const;
+  const ApplicationEventData *asApplication() const;
 
   template <typename T> auto asCustom() {
     static_assert(std::is_base_of_v<CustomEventData, T>,
                   "T must inherit from CustomEventData");
-    return static_pointer_cast<T>(data);
+    return static_cast<const T *>(data);
   }
 
   template <typename T>
   Event(const EventType _type, T &&_data)
-      : type(_type),
-        data(std::make_shared<std::decay_t<T>>(std::forward<T>(_data))) {
+      : type(_type), data(new std::decay_t<T>(std::forward<T>(_data))) {
     static_assert(std::is_base_of_v<IEventData, std::decay_t<T>>,
                   "T must inherit from EventData");
   }
-  Event(const EventType _type, std::shared_ptr<IEventData> _data)
-      : type(_type), data(_data) {}
-  Event(const EventType _type) : type(_type) {}
+  Event(const EventType _type, IEventData *_data) : type(_type), data(_data) {}
+  Event(const EventType _type) : type(_type), data(nullptr) {}
   Event(const Event &other) : type(other.type), data(other.data) {}
   ~Event() = default;
 };

@@ -4,36 +4,26 @@ drakon::scene::IScene::IScene(const Uint8 _red, const Uint8 _green,
                               const Uint8 _blue, const Uint8 _alpha)
     : red(_red), green(_green), blue(_blue), alpha(_alpha) {
   entities = std::vector<drakon::entity::Entity>();
-  componentLogs =
-      std::unordered_map<drakon::component::ComponentId,
-                         std::shared_ptr<drakon::component::LogComponent>>();
+  componentLogs = std::unordered_map<drakon::component::ComponentId,
+                                     drakon::component::LogComponent *>();
   entityComponentLogs =
       std::unordered_map<drakon::entity::Entity,
                          std::vector<drakon::component::ComponentId>>();
-  componentPositions = std::unordered_map<
-      drakon::component::ComponentId,
-      std::shared_ptr<drakon::component::PositionComponent>>();
+  componentPositions =
+      std::unordered_map<drakon::component::ComponentId,
+                         drakon::component::PositionComponent *>();
   entityComponentPositions =
       std::unordered_map<drakon::entity::Entity,
                          drakon::component::ComponentId>();
-  componentTextures = std::unordered_map<
-      drakon::component::ComponentId,
-      std::shared_ptr<drakon::component::TextureComponent>>();
+  componentTextures =
+      std::unordered_map<drakon::component::ComponentId,
+                         drakon::component::TextureComponent *>();
   entityComponentTextures =
       std::unordered_map<drakon::entity::Entity,
                          std::vector<drakon::component::ComponentId>>();
 }
 
-drakon::scene::IScene::~IScene() {
-  std::cout << "[IScene] cleaning up" << std::endl;
-  entityComponentTextures.clear();
-  entityComponentPositions.clear();
-  entityComponentLogs.clear();
-  componentTextures.clear();
-  componentPositions.clear();
-  componentLogs.clear();
-  entities.clear();
-}
+drakon::scene::IScene::~IScene() { unload(); }
 
 drakon::entity::Entity drakon::scene::IScene::makeEntity() {
   auto entity = drakon::entity::Entity();
@@ -54,12 +44,21 @@ std::vector<drakon::entity::Entity> drakon::scene::IScene::getEntities() const {
 }
 
 std::optional<drakon::error::Error> drakon::scene::IScene::unload() {
-  componentPositions.clear();
-  componentLogs.clear();
-  componentTextures.clear();
+  entityComponentTextures.clear();
   entityComponentPositions.clear();
   entityComponentLogs.clear();
-  entityComponentTextures.clear();
+  for (auto &[_, component] : componentTextures) {
+    delete component;
+  }
+  componentTextures.clear();
+  for (auto &[_, component] : componentPositions) {
+    delete component;
+  }
+  componentPositions.clear();
+  for (auto &[_, component] : componentLogs) {
+    delete component;
+  }
+  componentLogs.clear();
   entities.clear();
   return std::nullopt;
 }

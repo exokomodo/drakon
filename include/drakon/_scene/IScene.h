@@ -16,7 +16,6 @@ namespace drakon::scene {
 struct IScene {
   std::optional<drakon::error::Error> run();
 
-  IScene();
   IScene(const Uint8 red, const Uint8 green, const Uint8 blue,
          const Uint8 alpha);
 
@@ -41,14 +40,14 @@ struct IScene {
   std::vector<drakon::entity::Entity> getEntities() const;
 
   template <typename TComponent, typename... TArgs>
-  std::expected<std::weak_ptr<TComponent>, drakon::error::Error>
+  std::expected<TComponent *, drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
     static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
                   "TComponent must inherit from IComponent");
     if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
       return std::unexpected(drakon::error::Error("Entity does not exist"));
     }
-    auto component = std::make_shared<TComponent>(std::forward<TArgs>(args)...);
+    auto component = new TComponent(std::forward<TArgs>(args)...);
     const auto componentId = component->id;
     if constexpr (std::is_same_v<TComponent, drakon::component::LogComponent>) {
       if (entityComponentLogs.find(entity) == entityComponentLogs.end()) {
@@ -119,7 +118,7 @@ struct IScene {
   }
 
   template <typename TComponent>
-  std::optional<std::weak_ptr<TComponent>>
+  std::optional<TComponent *>
   getComponent(drakon::component::ComponentId componentId) {
     static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
                   "TComponent must inherit from IComponent");
@@ -149,13 +148,13 @@ private:
   std::vector<drakon::entity::Entity> entities;
 
   std::unordered_map<drakon::component::ComponentId,
-                     std::shared_ptr<drakon::component::PositionComponent>>
+                     drakon::component::PositionComponent *>
       componentPositions;
   std::unordered_map<drakon::component::ComponentId,
-                     std::shared_ptr<drakon::component::LogComponent>>
+                     drakon::component::LogComponent *>
       componentLogs;
   std::unordered_map<drakon::component::ComponentId,
-                     std::shared_ptr<drakon::component::TextureComponent>>
+                     drakon::component::TextureComponent *>
       componentTextures;
   std::unordered_map<drakon::entity::Entity, drakon::component::ComponentId>
       entityComponentPositions;

@@ -70,6 +70,8 @@ std::optional<drakon::error::Error> drakon::system::EventSystem::process() {
         listener(event);
       }
     }
+    delete event.data;
+    event.data = nullptr;
   }
   return std::nullopt;
 }

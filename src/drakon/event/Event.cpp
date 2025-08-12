@@ -19,21 +19,18 @@ drakon::event::Event drakon::event::Event::fromSDL(const SDL_Event &event) {
 }
 #endif
 
-const std::weak_ptr<drakon::event::KeyEventData>
-drakon::event::Event::asKey() const {
-  return static_pointer_cast<drakon::event::KeyEventData>(data);
+const drakon::event::KeyEventData *drakon::event::Event::asKey() const {
+  return static_cast<const drakon::event::KeyEventData *>(data);
 }
-const std::weak_ptr<drakon::event::MouseEventData>
-drakon::event::Event::asMouse() const {
-  return static_pointer_cast<drakon::event::MouseEventData>(data);
+const drakon::event::MouseEventData *drakon::event::Event::asMouse() const {
+  return static_cast<const drakon::event::MouseEventData *>(data);
 }
-const std::weak_ptr<drakon::event::WindowEventData>
-drakon::event::Event::asWindow() const {
-  return static_pointer_cast<drakon::event::WindowEventData>(data);
+const drakon::event::WindowEventData *drakon::event::Event::asWindow() const {
+  return static_cast<const drakon::event::WindowEventData *>(data);
 }
-const std::weak_ptr<drakon::event::ApplicationEventData>
+const drakon::event::ApplicationEventData *
 drakon::event::Event::asApplication() const {
-  return static_pointer_cast<drakon::event::ApplicationEventData>(data);
+  return static_cast<const drakon::event::ApplicationEventData *>(data);
 }
 
 bool drakon::event::Event::isNone() const { return type == None; }

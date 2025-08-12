@@ -21,7 +21,7 @@ std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
           scene->getComponent<drakon::component::PositionComponent>(
               positionComponents[0]);
       if (positionComponentOpt) {
-        auto positionComponent = (*positionComponentOpt).lock();
+        auto positionComponent = *positionComponentOpt;
         rootPosition += positionComponent->position;
       }
     }
@@ -33,7 +33,7 @@ std::optional<drakon::error::Error> drakon::system::TextureSystem::process() {
       if (!textureComponentOpt) {
         continue; // Skip if component retrieval failed
       }
-      const auto textureComponent = (*textureComponentOpt).lock();
+      const auto textureComponent = *textureComponentOpt;
       const auto position = rootPosition + textureComponent->position;
       const auto texture = textureComponent->getTexture();
       const auto dest =
