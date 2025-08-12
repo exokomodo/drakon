@@ -5,6 +5,9 @@
 #include <iostream>
 
 int main() {
+  // NOTE: This prevents some memory leaks but should not be used in production
+  // code. https://wiki.libsdl.org/SDL3/SDL_HINT_SHUTDOWN_DBUS_ON_QUIT
+  SDL_SetHint(SDL_HINT_SHUTDOWN_DBUS_ON_QUIT, "1");
   auto helloScene = std::make_shared<HelloScene>();
   auto otherScene = std::make_shared<OtherScene>(helloScene);
   helloScene->nextScene = otherScene;

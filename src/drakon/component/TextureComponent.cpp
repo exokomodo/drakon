@@ -25,7 +25,6 @@ drakon::component::TextureComponent::~TextureComponent() {
   std::cout << "[TextureComponent] cleaning up" << std::endl;
 #ifdef DRAKON_SDL
   if (texture) {
-    std::cout << "Destroying texture" << std::endl;
     SDL_DestroyTexture(texture);
     texture = nullptr;
   }
