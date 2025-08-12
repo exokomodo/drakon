@@ -12,20 +12,20 @@
 #include <queue>
 #include <vector>
 
+namespace drakon::system {
 #define MAKE_LISTENER(name)                                                    \
-  std::function<void(drakon::event::Event)> name = [this](                     \
+  drakon::system::EventSystem::Listener name = [this](                         \
       drakon::event::Event event)
 
-namespace drakon::system {
 struct EventSystem : public ISystem {
-  typedef std::function<void(drakon::event::Event)> Listener;
-
   EventSystem();
   EventSystem(const EventSystem &) = default;
   EventSystem(EventSystem &&) = default;
   EventSystem &operator=(const EventSystem &) = default;
   EventSystem &operator=(EventSystem &&) = default;
-  ~EventSystem() = default;
+  ~EventSystem();
+
+  typedef std::function<void(drakon::event::Event)> Listener;
 
   static EventSystem *getInstance();
 
@@ -38,11 +38,10 @@ struct EventSystem : public ISystem {
 private:
   static EventSystem *instance;
 
-  typedef std::vector<Listener> EventListenerList;
-  typedef std::map<drakon::event::EventType, EventListenerList>
-      EventListenerMap;
+  typedef std::vector<Listener> ListenerList;
+  typedef std::map<drakon::event::EventType, ListenerList> ListenerMap;
   std::queue<drakon::event::Event> eventQueue;
-  EventListenerMap listeners;
+  ListenerMap listeners;
 
   bool isEmpty() const;
 };

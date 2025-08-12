@@ -10,10 +10,10 @@
         "**/vendor": true
     },
     "files.associations": {
-        "**/include/**": "cpp",
-        "**/include/**.h": "cpp",
         "*.fs": "fsharp",
         "*.fsproj": "xml",
+        "**/include/**": "cpp",
+        "**/include/**.h": "cpp",
         "optional": "cpp",
         "__verbose_abort": "cpp",
         "clocale": "cpp",
@@ -50,6 +50,11 @@
         "array": "cpp",
         "complex": "cpp",
         "type_traits": "cpp",
-        "any": "cpp"
-    }
+        "any": "cpp",
+        "sdl_vacopy.h": "c"
+    },
+    "cSpell.words": [
+        "DRAKON",
+        "drakon"
+    ]
 }

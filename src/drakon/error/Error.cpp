@@ -7,6 +7,4 @@ drakon::error::Error::Error(const std::string_view _message) {
   message = _message;
 }
 
-[[nodiscard]] std::string_view drakon::error::Error::getMessage() const {
-  return message;
-}
+std::string_view drakon::error::Error::getMessage() const { return message; }

@@ -1,3 +1,10 @@
 #pragma once
 
-#include <drakon/_event/event.h>
+#include <drakon/_event/ApplicationEventData.h>
+#include <drakon/_event/CustomEventData.h>
+#include <drakon/_event/Event.h>
+#include <drakon/_event/EventType.h>
+#include <drakon/_event/IEventData.h>
+#include <drakon/_event/KeyEventData.h>
+#include <drakon/_event/MouseEventData.h>
+#include <drakon/_event/WindowEventData.h>

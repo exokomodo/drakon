@@ -5,6 +5,15 @@ drakon::system::EventSystem::EventSystem() {
   eventQueue = std::queue<drakon::event::Event>(); // Initialize the event queue
 }
 
+drakon::system::EventSystem::~EventSystem() {
+  std::cout << "[EventSystem] cleaning up" << std::endl;
+  EventSystem::instance = nullptr;
+  listeners.clear();
+  while (!eventQueue.empty()) {
+    eventQueue.pop();
+  }
+}
+
 std::optional<drakon::error::Error>
 drakon::system::EventSystem::enqueue(drakon::event::Event event) {
   try {

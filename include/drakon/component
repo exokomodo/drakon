@@ -3,4 +3,4 @@
 #include <drakon/_component/LogComponent.h>
 #include <drakon/_component/PositionComponent.h>
 #include <drakon/_component/TextureComponent.h>
-#include <drakon/_component/component.h>
+#include <drakon/_component/IComponent.h>

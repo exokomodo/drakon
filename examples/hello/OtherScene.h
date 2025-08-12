@@ -6,12 +6,17 @@
 
 struct HelloScene;
 
-struct OtherScene : public drakon::scene::Scene {
-  OtherScene() : OtherScene(nullptr) {}
-  OtherScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
-      : Scene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
+struct OtherScene : public drakon::scene::IScene {
+  OtherScene(std::weak_ptr<drakon::scene::IScene> _nextScene)
+      : IScene(0xFF, 0x00, 0x00, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<drakon::scene::Scene> nextScene;
+  ~OtherScene() {
+    std::cout << "[OtherScene] cleaning up" << std::endl;
+    nextScene.reset();
+    unload();
+  }
+
+  std::weak_ptr<drakon::scene::IScene> nextScene;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -26,13 +31,13 @@ struct OtherScene : public drakon::scene::Scene {
     if (!eventSystem->removeListener(drakon::event::KeyDown, handleKeyDown)) {
       return drakon::error::Error("Failed to remove key down listener");
     }
-    return drakon::scene::Scene::unload();
+    return drakon::scene::IScene::unload();
   }
 
 private:
   MAKE_LISTENER(handleKeyDown) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey()->input;
+      const auto input = event.asKey().lock()->input;
       switch (input) {
       case drakon::input::Left: {
         blue = std::max(0x00, blue - 10);
@@ -47,11 +52,12 @@ private:
         red = std::min(red + 10, 0xFF);
       } break;
       case drakon::input::Space: {
-        if (!nextScene) {
+        const auto _nextScene = nextScene.lock();
+        if (!_nextScene) {
           break;
         }
-        auto game = drakon::game::Game::getInstance();
-        game->setActiveScene(nextScene);
+        auto game = drakon::game::IGame::getInstance();
+        game->setActiveScene(_nextScene);
       } break;
       };
     }

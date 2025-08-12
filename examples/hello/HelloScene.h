@@ -8,15 +8,15 @@
 #include <drakon/scene>
 #include <optional>
 
-struct HelloScene : public drakon::scene::Scene {
-  HelloScene() : HelloScene(nullptr) {}
-  HelloScene(std::shared_ptr<drakon::scene::Scene> _nextScene)
-      : Scene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
+struct HelloScene : public drakon::scene::IScene {
+  HelloScene() : HelloScene(std::weak_ptr<drakon::scene::IScene>()) {}
+  HelloScene(std::weak_ptr<drakon::scene::IScene> _nextScene)
+      : IScene(0x00, 0x6C, 0x67, 0xFF), nextScene(_nextScene) {}
 
-  std::shared_ptr<drakon::scene::Scene> nextScene;
+  std::weak_ptr<drakon::scene::IScene> nextScene;
   drakon::entity::Entity entity;
-  std::shared_ptr<drakon::component::PositionComponent> position;
-  std::shared_ptr<drakon::component::TextureComponent> texture;
+  std::weak_ptr<drakon::component::PositionComponent> position;
+  std::weak_ptr<drakon::component::TextureComponent> texture;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -25,30 +25,36 @@ struct HelloScene : public drakon::scene::Scene {
     if (error) {
       return error;
     }
-    const auto game = drakon::game::Game::getInstance();
-    const auto scene = game->getActiveScene();
-    entity = scene->makeEntity();
-    scene->addComponent<drakon::component::LogComponent>(
+    const auto game = drakon::game::IGame::getInstance();
+    entity = makeEntity();
+    addComponent<drakon::component::LogComponent>(
         entity,
         std::string_view(
             "Hello DRAKON! Press arrow keys to change color, space to "
             "switch scene."),
         true);
-    auto textureRes = scene->addComponent<drakon::component::TextureComponent>(
+    auto textureRes = addComponent<drakon::component::TextureComponent>(
         entity, glm::vec3{0.0f, 0.0f, 0.0f}, smile_icon_bmp,
         smile_icon_bmp_len);
     if (!textureRes) {
       return textureRes.error();
     }
     texture = *textureRes;
-    auto positionRes =
-        scene->addComponent<drakon::component::PositionComponent>(
-            entity, glm::vec3{0.0f, 0.0f, 0.0f});
+    auto positionRes = addComponent<drakon::component::PositionComponent>(
+        entity, glm::vec3{0.0f, 0.0f, 0.0f});
     if (!positionRes) {
       return positionRes.error();
     }
     position = *positionRes;
     return std::nullopt;
+  }
+
+  ~HelloScene() {
+    std::cout << "[HelloScene] cleaning up" << std::endl;
+    nextScene.reset();
+    position.reset();
+    texture.reset();
+    unload();
   }
 
   std::optional<drakon::error::Error> unload() override {
@@ -58,33 +64,34 @@ struct HelloScene : public drakon::scene::Scene {
     }
     // NOTE: If you do not want to clear all components and entities on unload,
     // you can leave this out.
-    return drakon::scene::Scene::unload();
+    return drakon::scene::IScene::unload();
   }
 
 private:
   MAKE_LISTENER(handleKeyDown) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey()->input;
+      const auto input = event.asKey().lock()->input;
       const auto speed = 10.0f;
       switch (input) {
       case drakon::input::Left: {
-        position->position += glm::vec3{-speed, 0.0f, 0.0f};
+        position.lock()->position += glm::vec3{-speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Right: {
-        position->position += glm::vec3{speed, 0.0f, 0.0f};
+        position.lock()->position += glm::vec3{speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Up: {
-        texture->position += glm::vec3{0.0f, -speed, 0.0f};
+        texture.lock()->position += glm::vec3{0.0f, -speed, 0.0f};
       } break;
       case drakon::input::Down: {
-        texture->position += glm::vec3{0.0f, speed, 0.0f};
+        texture.lock()->position += glm::vec3{0.0f, speed, 0.0f};
       } break;
       case drakon::input::Space: {
-        if (!nextScene) {
+        const auto _nextScene = nextScene.lock();
+        if (!_nextScene) {
           break;
         }
-        const auto game = drakon::game::Game::getInstance();
-        game->setActiveScene(nextScene);
+        const auto game = drakon::game::IGame::getInstance();
+        game->setActiveScene(_nextScene);
       } break;
       };
     }

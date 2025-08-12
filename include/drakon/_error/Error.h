@@ -13,7 +13,7 @@ struct Error {
   explicit Error(const std::string_view message);
   ~Error() = default;
 
-  [[nodiscard]] std::string_view getMessage() const;
+  std::string_view getMessage() const;
 
   friend std::ostream &operator<<(std::ostream &os, const Error &error) {
     return os << "Error: " << error.getMessage();

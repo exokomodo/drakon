@@ -13,5 +13,10 @@ add_executable(hello WIN32 main.cpp)
 target_compile_definitions(hello PRIVATE
     DRAKON_SDL
 )
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    # NOTE: Enable sanitizers for debugging memory issues
+    # target_compile_options(hello PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+    # target_link_options(hello PRIVATE -fsanitize=address)
+endif()
 target_link_libraries(hello PRIVATE drakon SDL3::SDL3 SDL3_image::SDL3_image)
 

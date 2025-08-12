@@ -1,15 +1,13 @@
 #pragma once
 
-#include <functional>
-#include <optional>
-
-#include <drakon/_component/component.h>
+#include <drakon/_component/IComponent.h>
 #include <drakon/error>
+#include <string_view>
 
 namespace drakon::component {
-struct LogComponent : public Component {
-  LogComponent(std::string_view _message);
-  LogComponent(std::string_view _message, bool _isOneShot);
+struct LogComponent : public IComponent {
+  LogComponent(const std::string_view _message);
+  LogComponent(const std::string_view _message, const bool _isOneShot);
 
   std::string_view message;
   const bool isOneShot = false;

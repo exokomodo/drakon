@@ -3,29 +3,29 @@
 #ifdef DRAKON_SDL
 #include <SDL3/SDL.h>
 #endif
+#include <drakon/component>
 #include <drakon/entity>
 #include <drakon/error>
 #include <drakon/system>
-#include <list>
 #include <memory>
 #include <optional>
 #include <unordered_map>
 #include <vector>
 
 namespace drakon::scene {
-struct Scene {
+struct IScene {
   std::optional<drakon::error::Error> run();
 
-  Scene();
-  Scene(const Uint8 red, const Uint8 green, const Uint8 blue,
-        const Uint8 alpha);
+  IScene();
+  IScene(const Uint8 red, const Uint8 green, const Uint8 blue,
+         const Uint8 alpha);
 
-  Scene(const Scene &) = default;
-  Scene(Scene &&) = default;
-  Scene &operator=(const Scene &) = delete;
-  Scene &operator=(Scene &&) = delete;
+  IScene(const IScene &) = default;
+  IScene(IScene &&) = default;
+  IScene &operator=(const IScene &) = delete;
+  IScene &operator=(IScene &&) = delete;
 
-  virtual ~Scene();
+  virtual ~IScene();
 
   Uint8 red;
   Uint8 green;
@@ -33,27 +33,18 @@ struct Scene {
   Uint8 alpha;
 
   virtual std::optional<drakon::error::Error> load() = 0;
-  virtual std::optional<drakon::error::Error> unload() {
-    componentPositions.clear();
-    componentLogs.clear();
-    componentTextures.clear();
-    entityComponentPositions.clear();
-    entityComponentLogs.clear();
-    entityComponentTextures.clear();
-    entities.clear();
-    return std::nullopt;
-  }
+  virtual std::optional<drakon::error::Error> unload();
 
   drakon::entity::Entity makeEntity();
   bool registerEntity(drakon::entity::Entity entity);
 
-  std::list<drakon::entity::Entity> getEntities() const;
+  std::vector<drakon::entity::Entity> getEntities() const;
 
   template <typename TComponent, typename... TArgs>
-  std::expected<std::shared_ptr<TComponent>, drakon::error::Error>
+  std::expected<std::weak_ptr<TComponent>, drakon::error::Error>
   addComponent(drakon::entity::Entity entity, TArgs &&...args) {
-    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
-                  "TComponent must inherit from Component");
+    static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
+                  "TComponent must inherit from IComponent");
     if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
       return std::unexpected(drakon::error::Error("Entity does not exist"));
     }
@@ -94,8 +85,8 @@ struct Scene {
   template <typename TComponent>
   std::optional<std::vector<drakon::component::ComponentId>>
   getComponentIds(drakon::entity::Entity entity) {
-    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
-                  "TComponent must inherit from Component");
+    static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
+                  "TComponent must inherit from IComponent");
     if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
       return std::nullopt;
     }
@@ -128,10 +119,10 @@ struct Scene {
   }
 
   template <typename TComponent>
-  std::optional<std::shared_ptr<TComponent>>
+  std::optional<std::weak_ptr<TComponent>>
   getComponent(drakon::component::ComponentId componentId) {
-    static_assert(std::is_base_of_v<drakon::component::Component, TComponent>,
-                  "TComponent must inherit from Component");
+    static_assert(std::is_base_of_v<drakon::component::IComponent, TComponent>,
+                  "TComponent must inherit from IComponent");
     if constexpr (std::is_same_v<TComponent, drakon::component::LogComponent>) {
       if (componentLogs.find(componentId) == componentLogs.end()) {
         return std::nullopt;
@@ -155,7 +146,7 @@ struct Scene {
   }
 
 private:
-  std::list<drakon::entity::Entity> entities;
+  std::vector<drakon::entity::Entity> entities;
 
   std::unordered_map<drakon::component::ComponentId,
                      std::shared_ptr<drakon::component::PositionComponent>>

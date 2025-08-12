@@ -2,7 +2,7 @@
 #include <drakon/game>
 
 std::optional<drakon::error::Error> drakon::system::LogSystem::process() {
-  auto game = drakon::game::Game::getInstance();
+  auto game = drakon::game::IGame::getInstance();
   auto scene = game->getActiveScene();
   for (const auto &entity : scene->getEntities()) {
     auto components =
@@ -17,7 +17,7 @@ std::optional<drakon::error::Error> drakon::system::LogSystem::process() {
       if (!component) {
         continue; // Skip if component retrieval failed
       }
-      const auto &logComponent = *component;
+      const auto logComponent = (*component).lock();
       if (logComponent->isOneShot && logComponent->hasPrinted) {
         continue; // Skip if it's a one-shot component that has already printed
       }

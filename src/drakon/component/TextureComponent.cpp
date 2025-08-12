@@ -1,14 +1,15 @@
 #include <drakon/_component/TextureComponent.h>
 #include <drakon/game>
 
-drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
+drakon::component::TextureComponent::TextureComponent(const glm::vec3 _position,
                                                       SDL_Texture *_texture)
     : position(_position), texture(_texture) {}
-drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
-                                                      unsigned char *bmp_data,
-                                                      size_t bmp_len)
+
+drakon::component::TextureComponent::TextureComponent(const glm::vec3 _position,
+                                                      const ImageData bmp_data,
+                                                      const size_t bmp_len)
     : position(_position) {
-  auto game = drakon::game::Game::getInstance();
+  const auto game = drakon::game::IGame::getInstance();
   image_data = bmp_data;
   image_len = bmp_len;
 
@@ -18,6 +19,18 @@ drakon::component::TextureComponent::TextureComponent(glm::vec3 _position,
     SDL_Log("Couldn't load icon: %s\n", SDL_GetError());
     throw std::runtime_error("Failed to load image texture");
   }
+}
+
+drakon::component::TextureComponent::~TextureComponent() {
+  std::cout << "[TextureComponent] cleaning up" << std::endl;
+#ifdef DRAKON_SDL
+  if (texture) {
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+  }
+#endif
+  image_data = nullptr;
+  image_len = 0;
 }
 
 SDL_Texture *drakon::component::TextureComponent::getTexture() const {

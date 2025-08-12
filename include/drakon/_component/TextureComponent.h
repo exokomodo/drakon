@@ -1,28 +1,31 @@
 #pragma once
 
-// #ifdef DRAKON_SDL
+#ifdef DRAKON_SDL
 #include <SDL3_image/SDL_image.h>
-// #endif
-#include <drakon/_component/LogComponent.h>
-#include <drakon/_component/component.h>
+#endif
+#include <drakon/_component/IComponent.h>
 #include <glm/vec3.hpp>
 
 namespace drakon::component {
-struct TextureComponent : public Component {
+
+typedef unsigned char *ImageData;
+
+struct TextureComponent : public IComponent {
   glm::vec3 position;
-  TextureComponent(glm::vec3 _position, unsigned char *bmp_data,
-                   size_t bmp_len);
+  TextureComponent(const glm::vec3 _position, const ImageData bmp_data,
+                   const size_t bmp_len);
 #ifdef DRAKON_SDL
-  TextureComponent(glm::vec3 _position, SDL_Texture *_texture);
+  TextureComponent(const glm::vec3 _position, SDL_Texture *_texture);
+  ~TextureComponent();
 
   SDL_Texture *getTexture() const;
 #endif
 
 private:
-  // #ifdef DRAKON_SDL
-  unsigned char *image_data = nullptr;
+  ImageData image_data = nullptr;
   size_t image_len = 0;
+#ifdef DRAKON_SDL
   SDL_Texture *texture = NULL;
-  // #endif
+#endif
 };
 } // namespace drakon::component
