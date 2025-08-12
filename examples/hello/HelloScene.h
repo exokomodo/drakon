@@ -70,7 +70,11 @@ struct HelloScene : public drakon::scene::IScene {
 private:
   MAKE_LISTENER(handleKeyDown) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey()->input;
+      const auto inputOpt = event.getData<DRAKON_KEY_EVENT_DATA_TYPE>();
+      if (!inputOpt) {
+        return; // Invalid input, do nothing
+      }
+      const auto input = *inputOpt;
       const auto speed = 10.0f;
       switch (input) {
       case drakon::input::Left: {

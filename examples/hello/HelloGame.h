@@ -3,13 +3,8 @@
 #include <drakon/input>
 #include <string_view>
 
+#define CUSTOM_EVENT_DATA_TYPE const char *
 static const drakon::event::EventType customQuitType = 0x94FE6828;
-struct CustomEventData : drakon::event::CustomEventData {
-  std::string_view message;
-
-  CustomEventData(std::string_view _message) : message(_message) {}
-};
-
 struct HelloGame : public drakon::game::IGame {
   HelloGame(std::string_view _title, drakon::scene::IScene *_activeScene,
             int _width, int _height)
@@ -31,17 +26,16 @@ struct HelloGame : public drakon::game::IGame {
 private:
   MAKE_LISTENER(handleKey) {
     if (event.type == drakon::event::KeyDown) {
-      const auto input = event.asKey()->input;
+      const auto input = event.getData<DRAKON_KEY_EVENT_DATA_TYPE>();
       if (input == drakon::input::Escape) {
         const auto eventSystem = drakon::system::EventSystem::getInstance();
-        eventSystem->enqueue(
-            drakon::event::Event(customQuitType, CustomEventData("Goodbye!")));
+        eventSystem->enqueue(drakon::event::Event(customQuitType, "Goodbye!"));
       }
     }
   };
   MAKE_LISTENER(quit) { isRunning = false; };
   MAKE_LISTENER(customQuit) {
-    std::cout << "Hello from " << event.asCustom<CustomEventData>()->message
+    std::cout << "Hello from " << *event.getData<CUSTOM_EVENT_DATA_TYPE>()
               << std::endl;
     isRunning = false;
   };
