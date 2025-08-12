@@ -14,9 +14,10 @@ struct TextureComponent : public IComponent {
   glm::vec3 position;
   TextureComponent(const glm::vec3 _position, const ImageData bmp_data,
                    const size_t bmp_len);
+  void unload() override;
+
 #ifdef DRAKON_SDL
   TextureComponent(const glm::vec3 _position, SDL_Texture *_texture);
-  ~TextureComponent();
 
   SDL_Texture *getTexture() const;
 #endif
@@ -25,7 +26,7 @@ private:
   ImageData image_data = nullptr;
   size_t image_len = 0;
 #ifdef DRAKON_SDL
-  SDL_Texture *texture = NULL;
+  SDL_Texture *texture = nullptr;
 #endif
 };
 } // namespace drakon::component

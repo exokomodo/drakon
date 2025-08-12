@@ -21,7 +21,7 @@ drakon::component::TextureComponent::TextureComponent(const glm::vec3 _position,
   }
 }
 
-drakon::component::TextureComponent::~TextureComponent() {
+void drakon::component::TextureComponent::unload() {
   std::cout << "[TextureComponent] cleaning up" << std::endl;
 #ifdef DRAKON_SDL
   if (texture) {

@@ -6,11 +6,9 @@
 
 namespace drakon::component {
 struct LogComponent : public IComponent {
-  LogComponent(const std::string_view _message);
-  LogComponent(const std::string_view _message, const bool _isOneShot);
-
+  LogComponent(const std::string_view _message, const bool _isOneShot = false);
   std::string_view message;
-  const bool isOneShot = false;
+  bool isOneShot = false;
   bool hasPrinted = false;
 };
 } // namespace drakon::component
