@@ -15,8 +15,6 @@ struct HelloScene : public drakon::scene::IScene {
 
   drakon::scene::IScene *nextScene;
   drakon::entity::Entity entity;
-  drakon::component::PositionComponent *position;
-  drakon::component::TextureComponent *texture;
 
   std::optional<drakon::error::Error> load() override {
     const auto eventSystem = drakon::system::EventSystem::getInstance();
@@ -27,25 +25,27 @@ struct HelloScene : public drakon::scene::IScene {
     }
     const auto game = drakon::game::IGame::getInstance();
     entity = makeEntity();
-    addComponent<drakon::component::LogComponent>(
+    auto logError = addComponent(
+        entity, drakon::component::LogComponent(
+                    "Hello DRAKON! Press arrow keys to change color, space to "
+                    "switch scene.",
+                    true));
+    if (logError) {
+      return *logError;
+    }
+    auto textureError =
+        addComponent(entity, drakon::component::TextureComponent(
+                                 glm::vec3{0.0f, 0.0f, 0.0f}, smile_icon_bmp,
+                                 smile_icon_bmp_len));
+    if (textureError) {
+      return *textureError;
+    }
+    auto positionError = addComponent(
         entity,
-        std::string_view(
-            "Hello DRAKON! Press arrow keys to change color, space to "
-            "switch scene."),
-        true);
-    auto textureRes = addComponent<drakon::component::TextureComponent>(
-        entity, glm::vec3{0.0f, 0.0f, 0.0f}, smile_icon_bmp,
-        smile_icon_bmp_len);
-    if (!textureRes) {
-      return textureRes.error();
+        drakon::component::PositionComponent(glm::vec3{0.0f, 0.0f, 0.0f}));
+    if (positionError) {
+      return *positionError;
     }
-    texture = *textureRes;
-    auto positionRes = addComponent<drakon::component::PositionComponent>(
-        entity, glm::vec3{0.0f, 0.0f, 0.0f});
-    if (!positionRes) {
-      return positionRes.error();
-    }
-    position = *positionRes;
     return std::nullopt;
   }
 
@@ -53,8 +53,6 @@ struct HelloScene : public drakon::scene::IScene {
     std::cout << "[HelloScene] cleaning up" << std::endl;
     // NOTE: Unowned pointers, do not delete
     nextScene = nullptr;
-    position = nullptr;
-    texture = nullptr;
   }
 
   std::optional<drakon::error::Error> unload() override {
@@ -76,18 +74,20 @@ private:
       }
       const auto input = *inputOpt;
       const auto speed = 10.0f;
+      auto &positionComponent =
+          getComponent<drakon::component::PositionComponent>(entity);
       switch (input) {
       case drakon::input::Left: {
-        position->position += glm::vec3{-speed, 0.0f, 0.0f};
+        positionComponent.position += glm::vec3{-speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Right: {
-        position->position += glm::vec3{speed, 0.0f, 0.0f};
+        positionComponent.position += glm::vec3{speed, 0.0f, 0.0f};
       } break;
       case drakon::input::Up: {
-        texture->position += glm::vec3{0.0f, -speed, 0.0f};
+        positionComponent.position += glm::vec3{0.0f, -speed, 0.0f};
       } break;
       case drakon::input::Down: {
-        texture->position += glm::vec3{0.0f, speed, 0.0f};
+        positionComponent.position += glm::vec3{0.0f, speed, 0.0f};
       } break;
       case drakon::input::Space: {
         if (!nextScene) {
