@@ -6,11 +6,11 @@
 message("Examples to be built: ${ALL_EXAMPLES}")
 
 foreach(example ${ALL_EXAMPLES})
-    add_executable(exokomodo.drakon.examples.${example})
-    set_property(TARGET exokomodo.drakon.examples.${example} PROPERTY CXX_STANDARD 20)
-    target_sources(exokomodo.drakon.examples.${example} PRIVATE ${example}/main.cpp)
+    add_executable(examples.${example})
+    set_property(TARGET examples.${example} PROPERTY CXX_STANDARD 20)
+    target_sources(examples.${example} PRIVATE ${example}/main.cpp)
     target_link_libraries(
-        exokomodo.drakon.examples.${example}
+        examples.${example}
         PRIVATE
         exokomodo::drakon
     )

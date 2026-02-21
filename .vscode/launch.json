@@ -5,11 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "examples/hello-vulkan",
+            "name": "examples/hello",
             "type": "cppdbg",
             "request": "launch",
-            "preLaunchTask": "build examples/hello-vulkan",
-            "program": "${workspaceFolder}/build/examples/exokomodo.drakon.examples.hello-vulkan",
+            "preLaunchTask": "build examples/hello",
+            "program": "${workspaceFolder}/build/examples/examples.hello",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
