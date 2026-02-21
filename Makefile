@@ -64,8 +64,8 @@ build:
 list/example:
 	ls ./examples | grep -v '\.txt$$'
 
-run/example/%: build/examples/exokomodo.drakon.examples.%
-	./build/examples/exokomodo.drakon.examples.$*
+run/example/%: build/examples/examples.%
+	./build/examples/examples.$*
 
 CMAKE_BUILD_TYPE ?= Debug
 
@@ -74,10 +74,10 @@ build/all/examples: ## Build all examples
 	cmake --build build/examples
 
 # File pattern rule to build examples
-build/examples/exokomodo.drakon.examples.%: examples/%/*.cpp
+build/examples/examples.%: examples/%/*.cpp
 	cmake \
 		--build build \
-		--target exokomodo.drakon.examples.$*
+		--target examples.$*
 
 .PHONY: test
 test: test/all ## Build and run all tests

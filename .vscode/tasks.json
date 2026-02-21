@@ -9,7 +9,7 @@
 				"reveal": "silent"
 			},
 			"args": [
-				"build/examples/exokomodo.drakon.examples.hello-vulkan",
+				"build/examples/examples.hello-vulkan",
 			],
 			"group": {
 				"kind": "build",

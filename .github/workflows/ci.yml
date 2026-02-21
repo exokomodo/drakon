@@ -48,5 +48,5 @@ jobs:
         with:
           name: drakon-examples
           path: |
-            build/examples/exokomodo.drakon.examples.*
+            build/examples/examples.*
             examples/*/shaders/**
