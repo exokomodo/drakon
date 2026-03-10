@@ -38,7 +38,7 @@ else()
     message(FATAL_ERROR "GLFW package was found but did not provide a supported target (glfw or glfw::glfw).")
 endif()
 
-target_link_libraries(exokomodo.drakon PRIVATE Vulkan::Vulkan)
+target_link_libraries(exokomodo.drakon PUBLIC Vulkan::Vulkan)
 
 message(STATUS "GLFW was found.")
 message(STATUS "Vulkan SDK was found.")
