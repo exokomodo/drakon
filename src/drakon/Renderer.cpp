@@ -4,6 +4,8 @@
 #include <array>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <set>
@@ -713,6 +715,36 @@ bool drakon::Renderer::cleanup() {
     }
 
     return true;
+}
+
+std::vector<char> drakon::Renderer::loadSpirvShader(const std::string& filename) {
+    if (filename.empty()) {
+        std::cerr << "Shader filename cannot be empty." << std::endl;
+        return {};
+    }
+
+    const std::filesystem::path shaderPath(filename);
+    std::ifstream               file(shaderPath, std::ios::ate | std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open shader file: " << shaderPath << std::endl;
+        return {};
+    }
+
+    const std::streamsize fileSize = file.tellg();
+    if (fileSize <= 0) {
+        std::cerr << "Shader file is empty: " << shaderPath << std::endl;
+        return {};
+    }
+
+    std::vector<char> buffer(static_cast<size_t>(fileSize));
+    file.seekg(0);
+    file.read(buffer.data(), fileSize);
+    if (!file) {
+        std::cerr << "Failed to read shader file: " << shaderPath << std::endl;
+        return {};
+    }
+
+    return buffer;
 }
 
 bool drakon::Renderer::compileGlslShader(const std::string& filename) const {
