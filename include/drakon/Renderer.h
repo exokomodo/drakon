@@ -26,7 +26,8 @@ struct Renderer {
     std::array<float, 4>& getClearColor();
     RendererBackend       getBackend() const;
     static std::vector<char> loadSpirvShader(const std::string& filename);
-    bool                     compileGlslShader(const std::string& filename) const;
+    static std::vector<char> loadCompiledShader(const std::string& filename);
+    static bool              compileGlslShader(const std::string& filename);
 
     bool init(void* windowHandle, uint32_t width, uint32_t height);
 

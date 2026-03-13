@@ -46,8 +46,18 @@ struct TriangleRenderable : public drakon::Renderable {
             return true;
         }
 
-        auto vertCode = drakon::Renderer::loadSpirvShader((this->shaderDirectory / "triangle.vert.spv").string());
-        auto fragCode = drakon::Renderer::loadSpirvShader((this->shaderDirectory / "triangle.frag.spv").string());
+        const auto vertSource = (this->shaderDirectory / "triangle.vert").string();
+        const auto fragSource = (this->shaderDirectory / "triangle.frag").string();
+
+        if (!drakon::Renderer::compileGlslShader(vertSource)) {
+            return false;
+        }
+        if (!drakon::Renderer::compileGlslShader(fragSource)) {
+            return false;
+        }
+
+        auto vertCode = drakon::Renderer::loadCompiledShader(vertSource + ".spv");
+        auto fragCode = drakon::Renderer::loadCompiledShader(fragSource + ".spv");
         if (vertCode.empty() || fragCode.empty()) {
             return false;
         }

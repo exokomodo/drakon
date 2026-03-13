@@ -9,6 +9,9 @@
 #include <iostream>
 #include <limits>
 #include <set>
+#if defined(_WIN32)
+#include <process.h>
+#endif
 #include <string>
 #include <vector>
 
@@ -121,6 +124,23 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     }
 
     return requiredExtensions.empty();
+}
+
+std::optional<std::filesystem::path> findGlslcExecutable() {
+    const char* vulkanSdk = std::getenv("VULKAN_SDK");
+    if (vulkanSdk != nullptr && std::strlen(vulkanSdk) > 0) {
+        std::filesystem::path sdkPath(vulkanSdk);
+        std::filesystem::path glslcPath = sdkPath / "Bin" / "glslc.exe";
+        if (std::filesystem::exists(glslcPath)) {
+            return glslcPath;
+        }
+        glslcPath = sdkPath / "Bin32" / "glslc.exe";
+        if (std::filesystem::exists(glslcPath)) {
+            return glslcPath;
+        }
+    }
+
+    return std::nullopt;
 }
 } // namespace
 
@@ -747,16 +767,36 @@ std::vector<char> drakon::Renderer::loadSpirvShader(const std::string& filename)
     return buffer;
 }
 
-bool drakon::Renderer::compileGlslShader(const std::string& filename) const {
+std::vector<char> drakon::Renderer::loadCompiledShader(const std::string& filename) {
+    return loadSpirvShader(filename);
+}
+
+bool drakon::Renderer::compileGlslShader(const std::string& filename) {
     if (filename.empty()) {
         std::cerr << "Shader filename cannot be empty." << std::endl;
         return false;
     }
 
-    const std::string outputFilename = filename + ".spv";
-    const std::string command        = "glslc \"" + filename + "\" -o \"" + outputFilename + "\"";
+    const std::filesystem::path outputFilename = std::filesystem::path(filename).string() + ".spv";
+    std::filesystem::path       glslcPath;
 
+    if (auto glslcExecutable = findGlslcExecutable()) {
+        glslcPath = *glslcExecutable;
+    } else {
+        glslcPath = "glslc";
+    }
+
+#if defined(_WIN32)
+    const std::wstring glslcWide  = glslcPath.wstring();
+    const std::wstring inputWide  = std::filesystem::path(filename).wstring();
+    const std::wstring outputWide = outputFilename.wstring();
+    const wchar_t*     args[]     = {glslcWide.c_str(), inputWide.c_str(), L"-o", outputWide.c_str(), nullptr};
+    const int          result     = _wspawnvp(_P_WAIT, glslcWide.c_str(), args);
+#else
+    const std::string command = "\"" + glslcPath.string() + "\" \"" + filename + "\" -o \"" +
+                                outputFilename.string() + "\"";
     const int result = std::system(command.c_str());
+#endif
     if (result != 0) {
         std::cerr << "Failed to compile GLSL shader: " << filename << std::endl;
         return false;
