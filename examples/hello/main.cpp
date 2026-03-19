@@ -1,31 +1,11 @@
 #include <iostream>
 #include <filesystem>
-#include <fstream>
 #include <vector>
 
 #include <drakon/Game.h>
 #include <drakon/Renderable.h>
 
 namespace {
-std::vector<char> readFile(const std::filesystem::path& path) {
-    std::ifstream file(path, std::ios::ate | std::ios::binary);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open shader file: " << path << std::endl;
-        return {};
-    }
-
-    const std::streamsize fileSize = file.tellg();
-    if (fileSize <= 0) {
-        std::cerr << "Shader file is empty: " << path << std::endl;
-        return {};
-    }
-
-    std::vector<char> buffer(static_cast<size_t>(fileSize));
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-    return buffer;
-}
-
 VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code) {
     if (code.empty()) {
         return VK_NULL_HANDLE;
@@ -66,8 +46,18 @@ struct TriangleRenderable : public drakon::Renderable {
             return true;
         }
 
-        auto vertCode = readFile(this->shaderDirectory / "triangle.vert.spv");
-        auto fragCode = readFile(this->shaderDirectory / "triangle.frag.spv");
+        const auto vertSource = (this->shaderDirectory / "triangle.vert").string();
+        const auto fragSource = (this->shaderDirectory / "triangle.frag").string();
+
+        if (!drakon::Renderer::compileGlslShader(vertSource)) {
+            return false;
+        }
+        if (!drakon::Renderer::compileGlslShader(fragSource)) {
+            return false;
+        }
+
+        auto vertCode = drakon::Renderer::loadCompiledShader(vertSource + ".spv");
+        auto fragCode = drakon::Renderer::loadCompiledShader(fragSource + ".spv");
         if (vertCode.empty() || fragCode.empty()) {
             return false;
         }
@@ -208,15 +198,6 @@ struct Game : public drakon::Game {
     void init() override {
         std::cout << "Initializing Vulkan game" << std::endl;
         const std::filesystem::path shaderDirectory = std::filesystem::path(__FILE__).parent_path() / "shaders";
-
-        if (!this->renderer.compileGlslShader((shaderDirectory / "triangle.vert").string())) {
-            std::cerr << "Failed to compile vertex shader." << std::endl;
-            return;
-        }
-        if (!this->renderer.compileGlslShader((shaderDirectory / "triangle.frag").string())) {
-            std::cerr << "Failed to compile fragment shader." << std::endl;
-            return;
-        }
 
         this->renderables.push_back(new TriangleRenderable(shaderDirectory));
     }

@@ -7,10 +7,11 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
-            },
+          "cacheVariables": {
+            "CMAKE_C_COMPILER": "cl.exe",
+            "CMAKE_CXX_COMPILER": "cl.exe",
+            "CMAKE_PREFIX_PATH": "C:\\Program Files (x86)\\GLFW\\lib\\cmake\\glfw3;C:\\Program Files (x86)\\VulkanSDK"
+          },
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
